@@ -1,9 +1,9 @@
-import { useMenu } from "@/context/MenuContext";
+import { useDraft } from "@/context/DraftContext";
 import { IoMdSearch } from "react-icons/io";
 
 export function SearchBox() {
 
-  const { searchChampion, filterChampionBySearch } = useMenu()
+  const { searchChampion, filterChampionBySearch } = useDraft();
 
   return (
     <div>

@@ -1,8 +1,6 @@
 import { ChangeEvent } from "react";
-import { GameSeries } from "@/components/Menu";
 import { OPTIONS } from "@/utils/gameOptions";
 import { useMenu } from "@/context/MenuContext";
-
 
 export function GameSeriesPicker() {
 

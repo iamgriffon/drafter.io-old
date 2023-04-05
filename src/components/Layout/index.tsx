@@ -1,5 +1,5 @@
 import { ReactNode } from "react"
-import { Menu } from "./Menu"
+import { Menu } from "../Menu"
 import { Navbar } from "./Navbar"
 
 interface LayoutProps {

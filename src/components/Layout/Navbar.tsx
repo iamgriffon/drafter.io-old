@@ -17,15 +17,20 @@ export function Navbar() {
           <span className="text-gray-100 font-bold   hover:text-gray-300 cursor-pointer">
             {"New Draft"}
           </span>
-          <span className="text-gray-100 font-bold   hover:text-gray-300 cursor-pointer">
-            {"Import"}
-          </span>
-          <span className="text-gray-100 font-bold   cursor-pointer">
-            {"Export"}
-          </span>
-          <span className="text-gray-100 font-bold   hover:text-gray-300 cursor-pointer">
-            {"Save"}
-          </span>
+          {
+            !!user.isSignedIn &&
+              <>
+                <span className="text-gray-100 font-bold   hover:text-gray-300 cursor-pointer">
+                  {"Import"}
+                </span>
+                <span className="text-gray-100 font-bold   cursor-pointer">
+                  {"Export"}
+                </span>
+                <span className="text-gray-100 font-bold   hover:text-gray-300 cursor-pointer">
+                  {"Save"}
+                </span>
+              </>
+          }
         </div>
         <div className="flex flex-row gap-4">
           <IoMdSettings
@@ -36,7 +41,7 @@ export function Navbar() {
             <div className="rounded-full h-5">
               <Image
                 src={userProps?.profileImageUrl!}
-                className='rounded-full'
+                className="rounded-full"
                 width={24}
                 height={24}
                 alt="Profile Picture"

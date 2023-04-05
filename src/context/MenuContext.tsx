@@ -1,3 +1,4 @@
+import { DEFAULT_GAME_TYPE } from "@/server/utils/setDefaultValues";
 import { trpc } from "@/utils/trpc";
 import React, {
   createContext,
@@ -16,16 +17,12 @@ type Champion = {
 
 export type GameType = {
   game: number;
-  winner: "red" | "blue" | "not" | string ;
+  winner: "red" | "blue" | "not" | string;
 };
 
 export type GameSeries = GameType[];
 
-interface MenuContextProviderProps {
-  children: ReactNode;
-}
-
-interface MenuContextType {
+interface MenuContextProps {
   matches: GameSeries;
   setGameWinner: (param: "red" | "blue" | "not") => void;
   setBOSeries: (param: GameSeries) => void;
@@ -35,16 +32,19 @@ interface MenuContextType {
   champions: Champion[] | undefined;
 }
 
-export const MenuContext = createContext<MenuContextType>(
-  {} as MenuContextType
+interface MenuProviderProps {
+  children: ReactNode
+}
+
+export const MenuContext = createContext<MenuContextProps>(
+  {} as MenuContextProps
 );
 
-export const MenuContextProvider = ({ children }: MenuContextProviderProps) => {
-  const DEFAULT_VALUE: GameSeries = [{ game: 1, winner: 'not' }];
-  const [matches, setMatchType] = useState<GameSeries>(DEFAULT_VALUE);
+export const MenuProvider = ({children}: MenuProviderProps) => {
+  const [matches, setMatchType] = useState<GameSeries>(DEFAULT_GAME_TYPE);
   const [selectedMatch, setSelectedMatch] = useState<GameType>({
     game: 1,
-    winner: 'not',
+    winner: "not",
   });
 
   const [searchChampion, setSearchChampion] = useState("");
@@ -58,14 +58,10 @@ export const MenuContextProvider = ({ children }: MenuContextProviderProps) => {
     setChampions(initialQuery.data!);
   }, [initialQuery]);
 
-  useEffect(() => {
-    setMatchType(matches);
-  }, [matches]);
-
   useCallback(() => {
     setSelectedMatch(selectedMatch);
-    console.log('UseCallback')
-  },[selectedMatch])
+    console.log("UseCallback");
+  }, [selectedMatch]);
 
   function setBOSeries(series: GameSeries) {
     setMatchType(series);
