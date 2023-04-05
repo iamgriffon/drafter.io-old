@@ -1,21 +1,9 @@
 import { z } from "zod";
-import { procedure, router } from "../trpc";
+import { createTRPCRouter } from "../trpc";
+import { championRouter } from "./champions";
 
-export const appRouter = router({
-  hello: procedure.input(
-     z.object({
-      msg: z.string()
-    })
-  )
-  .query(async({input}) => {
-    if(input.msg.length > 0){
-      return {
-        data: `Hello ${input}`
-      }
-    } else {
-      return 'Hello from tRPC'
-    }
-  })
+export const appRouter = createTRPCRouter({
+  champion: championRouter
 });
 // export type definition of API
 export type AppRouter = typeof appRouter;

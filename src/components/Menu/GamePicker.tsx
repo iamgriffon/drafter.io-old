@@ -1,44 +1,17 @@
 import { ChangeEvent } from "react";
 import { GameSeries } from "@/components/Menu";
+import { OPTIONS } from "@/utils/gameOptions";
+import { useMenu } from "@/context/MenuContext";
 
-interface SeriesPickerProps {
-  setBOSeries: (param: GameSeries) => void;
-}
 
-export function GameSeriesPicker({setBOSeries}: SeriesPickerProps) {
-  const OPTIONS = [
-    {
-      type: "Best of 1",
-      id: '1',
-      value: [{ game: 1 }],
-    },
-    {
-      type: "Best of 3",
-      id: '3',
-      value: [
-        { game: 1, winner: null },
-        { game: 2, winner: null },
-        { game: 3, winner: null },
-      ],
-    },
-    {
-      type: "Best of 5",
-      id: '5',
-      value: [
-        { game: 1, winner: null },
-        { game: 2, winner: null },
-        { game: 3, winner: null },
-        { game: 4, winner: null },
-        { game: 5, winner: null },
-      ],
-    },
-  ];
+export function GameSeriesPicker() {
 
+  const { setBOSeries } = useMenu()
 
   function getValueById(Event: ChangeEvent<HTMLSelectElement>){
     const { value } = Event.currentTarget
     const getValue = OPTIONS.find(option => option.id == value)!;
-    if (value) setBOSeries(getValue?.value)
+    setBOSeries(getValue.value)
   }
 
   return (
