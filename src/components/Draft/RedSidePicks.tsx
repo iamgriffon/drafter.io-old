@@ -1,4 +1,4 @@
-import { BlueSidePickPosition, Draft, DraftPositions, RedSidePickPosition, useDraft } from "@/context/DraftContext";
+import { Draft, DraftPositions } from '@/types/draft';
 import Image from 'next/image'
 import { Dispatch, SetStateAction } from "react";
 
