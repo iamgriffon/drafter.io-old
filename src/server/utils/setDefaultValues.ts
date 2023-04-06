@@ -1,4 +1,4 @@
-import { Draft } from "@/context/DraftContext";
+import { Champion, Draft } from "@/context/DraftContext";
 import { GameSeries } from "@/context/MenuContext";
 
 export const DEFAULT_GAME_TYPE: GameSeries = [{ game: 1, winner: "not" }];
@@ -65,3 +65,31 @@ export const DEFAULT_BLUE_SIDE_DRAFT_STATE: Draft = {
     },
   ],
 };
+
+export const DEFAULT_CHAMPION_STATE: Champion = {
+  id: '99999',
+  draftable: null,
+  image: '',
+  name: '',
+}
+
+export const DEFAULT_CHAMPIONS_STATE: Champion[] = [
+  {
+    id: '1',
+    draftable: null,
+    image: '',
+    name: '',
+  },
+  {
+    id: '2',
+    draftable: null,
+    image: '',
+    name: '',
+  },
+  {
+    id: '3',
+    draftable: null,
+    image: '',
+    name: '',
+  },
+]

@@ -1,16 +1,8 @@
-import { useState } from "react";
 import { GameSeriesPicker } from "./GamePicker";
 import { GamePickerButtons } from "./GamePickerButtons";
 import { SearchBox } from "./SearchBox";
 import { Switch } from "./Switch";
 import { WinnerPicker } from "./WinnerPicker";
-
-export type GameType  = {
-  game: number;
-  winner?: 'red' | 'blue' | 'not' | null
-}
-
-export type GameSeries = GameType[]
 
 export function Menu() {
   return (

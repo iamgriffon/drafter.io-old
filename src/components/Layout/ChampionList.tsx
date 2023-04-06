@@ -1,16 +1,22 @@
 import Image from "next/image";
-import { useDraft } from "@/context/DraftContext";
-import { useCallback } from "react";
+import { useEffect } from "react";
+import { useMenu } from "@/context/MenuContext";
+import { Champion } from "@/types/draft";
 
-export function ChampionList() {
+interface ChampionListProps {
+  champions: Champion[]
+  selectedChampion: Champion,
+  handleClickChampion: (param: Champion) => void;
+}
+
+export function ChampionList({champions, handleClickChampion, selectedChampion }: ChampionListProps) {
   const {
-    pickOrBanChampion,
-    champions,
     searchChampion,
-    selectSlot,
-    draftChampion,
-    updateChampions
-  } = useDraft();
+  } = useMenu();
+
+  useEffect(() => {
+  handleClickChampion(selectedChampion)
+  },[handleClickChampion, selectedChampion])
 
   const filteredChampions = [...champions].length
     ? champions.filter((champion) =>
@@ -18,7 +24,7 @@ export function ChampionList() {
       )
     : [];
 
-    const forceUpdate = useCallback(() => {updateChampions; updateChampions}, [updateChampions]);
+    if (!champions) return <>Loading</>
 
   return (
     <div
@@ -26,18 +32,16 @@ export function ChampionList() {
       scroll scrollbar scrollbar-track-transparent scrollbar-thumb-gray-200 scrollbar-thumb-rounded-md"
     >
       <div className="grid grid-cols-10 m-3 p-3 gap-3 items-center">
-        {filteredChampions.map((champion) => (
-          <div key={champion.id} onClick={() => {}}>
+        {filteredChampions.map((champion, index) => (
+          <div key={index} className={`${champion.name === selectedChampion.name ? 'border-2 border-white' : ''}`}>
             {champion.draftable === true && (
               <Image
+              onClick={() => handleClickChampion(champion)}
                 width={75}
                 height={75}
                 src={champion.image}
                 alt={champion.name}
-                onClick={() => {
-                  pickOrBanChampion(champion);
-                  selectSlot(null);
-                }}
+              
               />
             )}{" "}
             {champion.draftable === false && (
@@ -47,7 +51,6 @@ export function ChampionList() {
                 src={champion.image}
                 alt={champion.name}
                 className="grayscale"
-                onClick={() => console.log(champion.draftable)}
               />
             )}
           </div>
