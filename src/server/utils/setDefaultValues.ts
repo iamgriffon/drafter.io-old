@@ -1,5 +1,5 @@
-import { Champion, Draft } from "@/context/DraftContext";
 import { GameSeries } from "@/context/MenuContext";
+import { Champion, Draft } from "@/types/draft";
 
 export const DEFAULT_GAME_TYPE: GameSeries = [{ game: 1, winner: "not" }];
 export const DEFAULT_RED_SIDE_DRAFT_STATE: Draft = {
