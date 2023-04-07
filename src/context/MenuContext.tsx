@@ -48,7 +48,7 @@ export const MenuContext = createContext<MenuContextProps>(
 
 export const MenuProvider = ({ children }: MenuProviderProps) => {
   const [matches, setMatches] = useState<GameSeries>(DEFAULT_MATCH_STATE);
-  const [stageMode, setStageMode] = useState<boolean>(true);
+  const [stageMode, setStageMode] = useState<boolean>(false);
   const [isGameOver, setIsGameOver] = useState<boolean>(false);
   const [score, setScore] = useState({ red: 0, blue: 0 });
   const [winnerTeam, setWinnerTeam] = useState<MatchWinner>(null);
