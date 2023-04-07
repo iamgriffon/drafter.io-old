@@ -1,21 +1,49 @@
-import { GameSeries } from "@/context/MenuContext";
-import { Champion, Draft } from "@/types/draft";
+import { Champion, Draft, Game, GameSeries } from "@/types/draft";
 
-export const DEFAULT_GAME_TYPE: GameSeries = [{ game: 1, winner: "not" }];
 export const DEFAULT_RED_SIDE_DRAFT_STATE: Draft = {
   picks: [
-    { position: "R1", champion: { name: "", image: "" , id: "", draftable: true} },
-    { position: "R2", champion: { name: "", image: "" , id: "", draftable: true} },
-    { position: "R3", champion: { name: "", image: "" , id: "", draftable: true} },
-    { position: "R4", champion: { name: "", image: "" , id: "", draftable: true} },
-    { position: "LAST PICK", champion: { name: "", image: "" , id: "", draftable: true} },
+    {
+      position: "R1",
+      champion: { name: "", image: "", id: "", draftable: true },
+    },
+    {
+      position: "R2",
+      champion: { name: "", image: "", id: "", draftable: true },
+    },
+    {
+      position: "R3",
+      champion: { name: "", image: "", id: "", draftable: true },
+    },
+    {
+      position: "R4",
+      champion: { name: "", image: "", id: "", draftable: true },
+    },
+    {
+      position: "LAST PICK",
+      champion: { name: "", image: "", id: "", draftable: true },
+    },
   ],
   bans: [
-    { position: "L1", champion: { name: "", image: "" , id: "", draftable: true} },
-    { position: "L2", champion: { name: "", image: "" , id: "", draftable: true} },
-    { position: "L3", champion: { name: "", image: "" , id: "", draftable: true} },
-    { position: "L4", champion: { name: "", image: "" , id: "", draftable: true} },
-    { position: "LAST BAN", champion: { name: "", image: "" , id: "", draftable: true} },
+    {
+      position: "L1",
+      champion: { name: "", image: "", id: "", draftable: true },
+    },
+    {
+      position: "L2",
+      champion: { name: "", image: "", id: "", draftable: true },
+    },
+    {
+      position: "L3",
+      champion: { name: "", image: "", id: "", draftable: true },
+    },
+    {
+      position: "L4",
+      champion: { name: "", image: "", id: "", draftable: true },
+    },
+    {
+      position: "LAST BAN",
+      champion: { name: "", image: "", id: "", draftable: true },
+    },
   ],
 };
 
@@ -23,7 +51,7 @@ export const DEFAULT_BLUE_SIDE_DRAFT_STATE: Draft = {
   picks: [
     {
       position: "FIRST PICK",
-      champion: { name: "", image: "", id: "", draftable: true},
+      champion: { name: "", image: "", id: "", draftable: true },
     },
     {
       position: "B2",
@@ -67,29 +95,111 @@ export const DEFAULT_BLUE_SIDE_DRAFT_STATE: Draft = {
 };
 
 export const DEFAULT_CHAMPION_STATE: Champion = {
-  id: '99999',
+  id: "99999",
   draftable: null,
-  image: '',
-  name: '',
-}
+  image: "",
+  name: "",
+};
 
 export const DEFAULT_CHAMPIONS_STATE: Champion[] = [
   {
-    id: '1',
+    id: "1",
     draftable: null,
-    image: '',
-    name: '',
+    image: "",
+    name: "",
   },
   {
-    id: '2',
+    id: "2",
     draftable: null,
-    image: '',
-    name: '',
+    image: "",
+    name: "",
   },
   {
-    id: '3',
+    id: "3",
     draftable: null,
-    image: '',
-    name: '',
+    image: "",
+    name: "",
   },
-]
+];
+
+export const DEFAULT_GAME_STATE: Game = {
+  game: 1,
+  blueSide: DEFAULT_BLUE_SIDE_DRAFT_STATE,
+  redSide: DEFAULT_RED_SIDE_DRAFT_STATE,
+  winner: null
+}
+
+export const DEFAULT_MATCH_STATE: GameSeries = {
+  series: "BO1",
+  winner: null,
+  games: [
+    {
+      game: 1,
+      winner: 'not',
+      blueSide: DEFAULT_BLUE_SIDE_DRAFT_STATE,
+      redSide: DEFAULT_RED_SIDE_DRAFT_STATE
+    },
+  ],
+};
+
+export const DEFAULT_BO3_STATE: GameSeries = {
+  series: "BO3",
+  winner: null,
+  games: [
+    {
+      game: 1,
+      winner: 'not',
+      blueSide: DEFAULT_BLUE_SIDE_DRAFT_STATE,
+      redSide: DEFAULT_RED_SIDE_DRAFT_STATE
+    },
+    {
+      game: 2,
+      winner: 'not',
+      blueSide: DEFAULT_BLUE_SIDE_DRAFT_STATE,
+      redSide: DEFAULT_RED_SIDE_DRAFT_STATE
+    },
+    {
+      game: 3,
+      winner: 'not',
+      blueSide: DEFAULT_BLUE_SIDE_DRAFT_STATE,
+      redSide: DEFAULT_RED_SIDE_DRAFT_STATE
+    },
+  ],
+}
+
+export const DEFAULT_BO5_STATE: GameSeries = {
+  series: 'BO5',
+  winner: null,
+  games: [
+    {
+      game: 1,
+      winner: 'not',
+      blueSide: DEFAULT_BLUE_SIDE_DRAFT_STATE,
+      redSide: DEFAULT_RED_SIDE_DRAFT_STATE
+    },
+    {
+      game: 2,
+      winner: 'not',
+      blueSide: DEFAULT_BLUE_SIDE_DRAFT_STATE,
+      redSide: DEFAULT_RED_SIDE_DRAFT_STATE
+    },
+    {
+      game: 3,
+      winner: 'not',
+      blueSide: DEFAULT_BLUE_SIDE_DRAFT_STATE,
+      redSide: DEFAULT_RED_SIDE_DRAFT_STATE
+    },
+    {
+      game: 4,
+      winner: 'not',
+      blueSide: DEFAULT_BLUE_SIDE_DRAFT_STATE,
+      redSide: DEFAULT_RED_SIDE_DRAFT_STATE
+    },
+    {
+      game: 5,
+      winner: 'not',
+      blueSide: DEFAULT_BLUE_SIDE_DRAFT_STATE,
+      redSide: DEFAULT_RED_SIDE_DRAFT_STATE
+    },
+  ],
+}

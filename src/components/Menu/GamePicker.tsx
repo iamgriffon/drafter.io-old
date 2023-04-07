@@ -4,12 +4,13 @@ import { useMenu } from "@/context/MenuContext";
 
 export function GameSeriesPicker() {
 
-  const { setBOSeries } = useMenu()
+  const { setBOSeries, clearIndex } = useMenu();
 
   function getValueById(Event: ChangeEvent<HTMLSelectElement>){
     const { value } = Event.currentTarget
-    const getValue = OPTIONS.find(option => option.id == value)!;
-    setBOSeries(getValue.value)
+    const getValue = OPTIONS.find(option => option.id == value)?.value!;
+    if (getValue) setBOSeries(getValue);
+    clearIndex();
   }
 
   return (
@@ -19,7 +20,7 @@ export function GameSeriesPicker() {
         className="rounded-md font-bold bg-gray-700 px-4 h-10 justify-center items-center appearance-none [text-align-last:center] cursor-pointer"
         onChange={(e) => getValueById(e)}
       >
-        {OPTIONS?.map((option, index) => (
+        {OPTIONS.map((option, index) => (
           <option key={index} className="pb-2" value={option.id}>
             {option.type}
           </option>

@@ -3,6 +3,8 @@ export type RedSidePickPosition = "R1" | "R2" | "R3" | "R4" | "LAST PICK";
 export type BlueSideBanPosition = "FIRST BAN" | "F2" | "F3" | "F4" | "F5";
 export type RedSideBanPosition = "L1" | "L2" | "L3" | "L4" | "LAST BAN";
 
+export type MatchWinner = "red" | "blue" | "not" | null;
+
 export type Champion = {
   id: string;
   name: string;
@@ -20,11 +22,6 @@ export type DraftBan = {
   champion: Champion;
 };
 
-export type Draft = {
-  picks: DraftPick[];
-  bans: DraftBan[];
-};
-
 export type DraftPositions =
   | RedSidePickPosition
   | BlueSidePickPosition
@@ -32,9 +29,22 @@ export type DraftPositions =
   | BlueSideBanPosition
   | null;
 
-  export type GameType  = {
-    game: number;
-    winner?: 'red' | 'blue' | 'not' | null
-  }
-  
-  export type GameSeries = GameType[]
+export type Draft = {
+  picks: DraftPick[];
+  bans: DraftBan[];
+};
+
+export type Game = {
+  game: number;
+  winner: MatchWinner;
+  blueSide: Draft;
+  redSide: Draft;
+};
+
+export type GameSeries = {
+  series: Series;
+  winner: MatchWinner;
+  games: Game[];
+};
+
+export type Series = "BO1" | "BO3" | "BO5";

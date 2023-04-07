@@ -1,15 +1,22 @@
-import { DraftPositions, Draft } from "@/types/draft";
+import { useMenu } from "@/context/MenuContext";
+import { DraftPositions, Draft, MatchWinner } from "@/types/draft";
 import Image from "next/image";
+import { FaCrown } from "react-icons/fa";
 
 interface BlueSideProps {
   blueSide: Draft;
   selectSlot: (param: DraftPositions) => void;
+  isWinner: MatchWinner;
 }
 
-export function BlueSide({ blueSide, selectSlot }: BlueSideProps) {
+export function BlueSide({ blueSide, selectSlot, isWinner }: BlueSideProps) {
+
+  const {stageMode} = useMenu()
+
   return (
     <div className="flex flex-col text-2xl mt-4 gap-10">
       <div className="flex items-center justify-end">
+      { stageMode && isWinner === 'blue' && <><strong>GG!</strong><FaCrown className='mx-3' size={28} /> </>}
         <h1 className="font-bold">BLUE SIDE</h1>
       </div>
 
