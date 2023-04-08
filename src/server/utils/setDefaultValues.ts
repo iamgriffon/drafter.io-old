@@ -148,19 +148,19 @@ export const DEFAULT_BO3_STATE: GameSeries = {
   games: [
     {
       game: 1,
-      winner: 'not',
+      winner: null,
       blueSide: DEFAULT_BLUE_SIDE_DRAFT_STATE,
       redSide: DEFAULT_RED_SIDE_DRAFT_STATE
     },
     {
       game: 2,
-      winner: 'not',
+      winner: null,
       blueSide: DEFAULT_BLUE_SIDE_DRAFT_STATE,
       redSide: DEFAULT_RED_SIDE_DRAFT_STATE
     },
     {
       game: 3,
-      winner: 'not',
+      winner: null,
       blueSide: DEFAULT_BLUE_SIDE_DRAFT_STATE,
       redSide: DEFAULT_RED_SIDE_DRAFT_STATE
     },

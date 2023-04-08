@@ -9,10 +9,10 @@ export function GamePickerButtons() {
         return "inline-block transform -skew-x-12 border-red-500 text-red-500 px-4 py-2 mt-1 overflow-hidden font-bold border-4 focus:border-2";
       case "blue":
         return "inline-block transform -skew-x-12 border-blue-500 text-blue-500 px-4 py-2 mt-1 overflow-hidden border-2 font-bold border-4 focus:border-2";
-      case "not":
+      case null:
         return "inline-block transform -skew-x-12 border-2 text-white px-4 py-2 mt-1 overflow-hidden font-bold border-2 focus:border-4";
       default:
-        return;
+        return "inline-block transform -skew-x-12 border-2 text-white px-4 py-2 mt-1 overflow-hidden font-bold border-2 focus:border-4";
     }
   };
 

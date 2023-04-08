@@ -140,13 +140,13 @@ export const MenuProvider = ({ children }: MenuProviderProps) => {
     setChampions(initialQuery.data!);
   }, [initialQuery]);
 
-  useCallback(() => {
+  useEffect(() => {
     setSelectedMatch(selectedMatch);
-    console.log("UseCallback");
   }, [selectedMatch]);
 
   function handleToggle() {
     setStageMode(!stageMode);
+    if (!stageMode) setActiveIndex(0);
 
     let cleanUp = matches;
 
@@ -154,7 +154,7 @@ export const MenuProvider = ({ children }: MenuProviderProps) => {
     cleanUp.games = matches.games.map((game) => {
       return {
         ...game,
-        winner: "not",
+        winner: null,
       };
     });
 
@@ -177,7 +177,6 @@ export const MenuProvider = ({ children }: MenuProviderProps) => {
         games: cleanUp.games.map((clean) => {
           return {
             ...clean,
-            winner: "not",
           };
         }),
       };
