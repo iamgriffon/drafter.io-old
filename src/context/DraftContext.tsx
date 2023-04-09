@@ -1,11 +1,10 @@
 import {
+  DEFAULT_RED_SIDE_DRAFT_STATE,
+  DEFAULT_BLUE_SIDE_DRAFT_STATE,
   DEFAULT_CHAMPION_STATE,
+  DEFAULT_MATCH_STATE,
 } from "@/server/utils/setDefaultValues";
-import {
-  Champion,
-  Draft,
-  DraftPositions,
-} from "@/types/draft";
+import { Champion, Draft, DraftPositions, Game, GameSeries, Series } from "@/types/draft";
 import { trpc } from "@/utils/trpc";
 import {
   createContext,
@@ -28,33 +27,27 @@ interface DraftContextProps {
 
 interface DraftProviderProps {
   children: ReactNode;
-  champions: Champion[];
-  setChampions: Dispatch<SetStateAction<Champion[]>>;
-  redSide: Draft;
-  blueSide: Draft;
-  setRedSide:  Dispatch<SetStateAction<Draft>>
-  setBlueSide:  Dispatch<SetStateAction<Draft>>
-
 }
 
 const DraftContext = createContext({} as DraftContextProps);
 
-export const DraftProvider = ({
-  children,
-  champions,
-  setChampions,
-  blueSide,
-  redSide,
-  setBlueSide,
-  setRedSide,
-}: DraftProviderProps) => {
+export const DraftProvider = ({ children }: DraftProviderProps) => {
+  const [redSide, setRedSide] = useState<Draft>(DEFAULT_RED_SIDE_DRAFT_STATE);
+  const [blueSide, setBlueSide] = useState<Draft>(
+    DEFAULT_BLUE_SIDE_DRAFT_STATE
+  );
+  const [champions, setChampions] = useState<Champion[]>([
+    DEFAULT_CHAMPION_STATE,
+  ]);
   const [champion, setChampion] = useState<Champion>(DEFAULT_CHAMPION_STATE);
   const [selectedSlot, selectSlot] = useState<DraftPositions>(null);
   const initialQuery = trpc.champion.fetchChampions.useQuery();
+  const [series, setSeries] = useState<GameSeries>(DEFAULT_MATCH_STATE);
 
   const handlePick = useCallback(
     (selectedChampion: Champion, position: DraftPositions) => {
       if (selectedChampion.name.length == 0 || position === null) return;
+      /* Pick or Ban Champion  */
       if (selectedChampion.name.length && position !== null) {
         if (
           selectedSlot &&
@@ -135,9 +128,11 @@ export const DraftProvider = ({
         }
       }
       selectSlot(null);
-      setChampion(DEFAULT_CHAMPION_STATE);
+      setChampion(
+        DEFAULT_CHAMPION_STATE
+      );
     },
-    [champion, selectedSlot, setBlueSide, setRedSide]
+    [champion, selectedSlot]
   );
 
   const handleChampionDraftability = useCallback(() => {
@@ -154,8 +149,7 @@ export const DraftProvider = ({
         return champ;
       });
     });
-  }, [blueSide, redSide, setChampions]);
-
+  }, [blueSide, redSide]);
 
   useEffect(() => {
     handlePick(champion, selectedSlot);
@@ -170,9 +164,9 @@ export const DraftProvider = ({
       };
     });
     setChampions(draftChampions!);
-  }, [initialQuery.data, setChampions]);
+  }, [initialQuery.data]);
 
-  
+
   function handleClickChampion(selectedChampion: Champion) {
     setChampion(selectedChampion);
   }
@@ -185,7 +179,7 @@ export const DraftProvider = ({
         blueSide,
         redSide,
         selectSlot,
-        handleClickChampion,
+        handleClickChampion
       }}
     >
       {children}

@@ -1,7 +1,8 @@
 import { useMenu } from "@/context/MenuContext";
-import { Game } from "@/types/draft";
 
 export function GamePickerButtons() {
+  const { matches, selectMatch, stageMode, activeIndex } = useMenu();
+
   const hasWinner = (winner: "red" | "blue" | "not" | null) => {
     switch (winner) {
       case "red":
@@ -14,42 +15,75 @@ export function GamePickerButtons() {
         return "inline-block transform -skew-x-12 border-2 text-white px-3 py-2 mt-1 overflow-hidden font-bold border-2 focus:border-4";
     }
   };
-  const { matches, setSelectedMatch, selectedMatch, stageMode, activeIndex } =
-    useMenu();
 
-  function handleClick(match: Game){
-    const currentMatchWinner = matches.games.find((match) => match.game === selectedMatch?.game)?.winner!
-    setSelectedMatch({
-      game: match.game, 
-      blueSide: match.blueSide,
-      redSide: match.redSide,
-      winner: currentMatchWinner!
-    })
-  }
-
-   
   return (
     <div className="flex gap-3 relative">
       {matches.games.map((match, index) => {
-        if(stageMode && (index <= activeIndex)){
+        if (stageMode) {
+          if (index <= activeIndex) {
+            return (
+              <div key={index}>
+                {match.winner ? (
+                  <button
+                    key={index}
+                    className={`${hasWinner(match.winner)}`}
+                    onBlur={() => {
+                      selectMatch(match);
+                    }}
+                    onClick={() => {
+                      selectMatch(match);
+                    }}
+                  >
+                    Game {index + 1}
+                  </button>
+                ) : (
+                  <button
+                    key={index + 1}
+                    className={`${hasWinner(null)}`}
+                    onBlur={() => {
+                      selectMatch(match);
+                    }}
+                    onClick={() => {
+                      selectMatch(match);
+                    }}
+                  >
+                    Game {index + 1}
+                  </button>
+                )}
+              </div>
+            );
+          }
+        } else {
           return (
-            <button
-              key={index}
-              className={`${hasWinner(match.winner)}}`}
-              onClick={() => handleClick(match)}
-            >
-              Game {match.game}
-            </button>
-          );
-        } else if(!stageMode) {
-          return (
-            <button
-              key={index}
-              className={`${hasWinner(match.winner)}`}
-              onClick={() => handleClick(match)}
-            >
-              Game {match.game}
-            </button>
+            <div key={index}>
+              {match.winner ? (
+                <button
+                  key={index}
+                  className={`${hasWinner(match.winner)}`}
+                  onBlur={() => {
+                    selectMatch(match);
+                  }}
+                  onClick={() => {
+                    selectMatch(match);
+                  }}
+                >
+                  Game {index + 1}
+                </button>
+              ) : (
+                <button
+                  key={index + 1}
+                  className={`${hasWinner(null)}`}
+                  onBlur={() => {
+                    selectMatch(match);
+                  }}
+                  onClick={() => {
+                    selectMatch(match);
+                  }}
+                >
+                  Game {index + 1}
+                </button>
+              )}
+            </div>
           );
         }
       })}
