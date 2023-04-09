@@ -3,7 +3,7 @@ export type RedSidePickPosition = "R1" | "R2" | "R3" | "R4" | "LAST PICK";
 export type BlueSideBanPosition = "FIRST BAN" | "F2" | "F3" | "F4" | "F5";
 export type RedSideBanPosition = "L1" | "L2" | "L3" | "L4" | "LAST BAN";
 
-export type MatchWinner = "red" | "blue" | "not" | null;
+export type MatchWinner = "red" | "blue" |  null;
 
 export type Champion = {
   id: string;

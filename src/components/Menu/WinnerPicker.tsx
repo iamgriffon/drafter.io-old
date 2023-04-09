@@ -21,7 +21,7 @@ export function WinnerPicker() {
             <p className="text-xl place-self-center">|</p>
             <button
               className="bg-white h-10 w-10 rounded-full focus:border-2 focus:border-gray-200"
-              onClick={() => setWinnerTeam("not")}
+              onClick={() => setWinnerTeam(null)}
             ></button>
           </>
         )}

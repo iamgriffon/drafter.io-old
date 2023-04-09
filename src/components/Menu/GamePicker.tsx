@@ -4,13 +4,12 @@ import { useMenu } from "@/context/MenuContext";
 
 export function GameSeriesPicker() {
 
-  const { setBOSeries, clearIndex } = useMenu();
+  const { setMatches } = useMenu();
 
   function getValueById(Event: ChangeEvent<HTMLSelectElement>){
     const { value } = Event.currentTarget
     const getValue = OPTIONS.find(option => option.id == value)?.value!;
-    if (getValue) setBOSeries(getValue);
-    clearIndex();
+    if (getValue) setMatches(getValue);
   }
 
   return (
