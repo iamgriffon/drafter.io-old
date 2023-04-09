@@ -135,7 +135,7 @@ export const DEFAULT_MATCH_STATE: GameSeries = {
   games: [
     {
       game: 1,
-      winner: 'not',
+      winner: null,
       blueSide: DEFAULT_BLUE_SIDE_DRAFT_STATE,
       redSide: DEFAULT_RED_SIDE_DRAFT_STATE
     },
@@ -173,31 +173,31 @@ export const DEFAULT_BO5_STATE: GameSeries = {
   games: [
     {
       game: 1,
-      winner: 'not',
+      winner: null,
       blueSide: DEFAULT_BLUE_SIDE_DRAFT_STATE,
       redSide: DEFAULT_RED_SIDE_DRAFT_STATE
     },
     {
       game: 2,
-      winner: 'not',
+      winner: null,
       blueSide: DEFAULT_BLUE_SIDE_DRAFT_STATE,
       redSide: DEFAULT_RED_SIDE_DRAFT_STATE
     },
     {
       game: 3,
-      winner: 'not',
+      winner: null,
       blueSide: DEFAULT_BLUE_SIDE_DRAFT_STATE,
       redSide: DEFAULT_RED_SIDE_DRAFT_STATE
     },
     {
       game: 4,
-      winner: 'not',
+      winner: null,
       blueSide: DEFAULT_BLUE_SIDE_DRAFT_STATE,
       redSide: DEFAULT_RED_SIDE_DRAFT_STATE
     },
     {
       game: 5,
-      winner: 'not',
+      winner: null,
       blueSide: DEFAULT_BLUE_SIDE_DRAFT_STATE,
       redSide: DEFAULT_RED_SIDE_DRAFT_STATE
     },
