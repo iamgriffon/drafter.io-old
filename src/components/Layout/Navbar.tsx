@@ -1,5 +1,4 @@
 import { IoMdSettings } from "react-icons/io";
-import { BsBellFill } from "react-icons/bs";
 import { SignInButton, SignOutButton, useUser } from "@clerk/nextjs";
 import Image from "next/image";
 
@@ -11,12 +10,6 @@ export function Navbar() {
     <>
       <div className="flex flex-row justify-between self-center items-center py-4 px-8 w-full max-w-[1440px] border-b-2 mb-3">
         <div className="flex flex-row gap-8">
-          <span className="text-gray-100 font-bold   hover:text-gray-300 cursor-pointer">
-            {"Start/Reset"}
-          </span>
-          <span className="text-gray-100 font-bold   hover:text-gray-300 cursor-pointer">
-            {"New Draft"}
-          </span>
           {
             !!user.isSignedIn &&
               <>
