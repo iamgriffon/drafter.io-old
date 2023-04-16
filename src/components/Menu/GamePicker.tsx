@@ -1,29 +1,48 @@
-import { ChangeEvent } from "react";
-import { OPTIONS } from "@/utils/gameOptions";
 import { useMenu } from "@/context/MenuContext";
+import {
+  DEFAULT_BO1_STATE,
+  DEFAULT_BO3_STATE,
+  DEFAULT_BO5_STATE,
+} from "@/server/utils/setDefaultValues";
+import { ChangeEvent, useCallback, useEffect } from "react";
 
 export function GameSeriesPicker() {
+  const { setMatches, setSelectedMatch, matches } = useMenu();
 
-  const { setMatches } = useMenu();
+  const handlePickSeries = useCallback((Event: ChangeEvent<HTMLSelectElement>) => {
+    Event.stopPropagation();
+    const { value } = Event.target;
 
-  function getValueById(Event: ChangeEvent<HTMLSelectElement>){
-    const { value } = Event.currentTarget
-    const getValue = OPTIONS.find(option => option.id == value)?.value!;
-    if (getValue) setMatches(getValue);
-  }
+    switch (value) {
+      case "BO1":
+          setMatches(DEFAULT_BO1_STATE);
+          break;
+      case "BO3":
+          setMatches(DEFAULT_BO3_STATE);
+          break;
+      case "BO5":
+          setMatches(DEFAULT_BO5_STATE);
+          break;
+      default: 
+        return;
+    }},[setMatches]);
+
+    useEffect(() => {
+      setSelectedMatch(matches.games[0]!);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    },[]);
+
 
   return (
-    <div className="flex justify-center items-center gap-4">
-      <p className="font-bold  ">Series: </p>
+    <div className="flex items-center justify-center">
       <select
-        className="rounded-md font-bold bg-gray-700 px-4 h-10 justify-center items-center appearance-none [text-align-last:center] cursor-pointer"
-        onChange={(e) => getValueById(e)}
+        onChange={(e) => handlePickSeries(e)}
+        className="rounded-md font-bold bg-gray-700 w-full px-3 h-10 [text-align-last:center] justify-center appearance-none cursor-pointer"
       >
-        {OPTIONS.map((option, index) => (
-          <option key={index} className="pb-2" value={option.id}>
-            {option.type}
-          </option>
-        ))}
+        <option value="DEFAULT" defaultChecked>-----</option>
+        <option value="BO1">Best of 1</option>
+        <option value="BO3">Best of 3</option>
+        <option value="BO5">Best of 5</option>
       </select>
     </div>
   );

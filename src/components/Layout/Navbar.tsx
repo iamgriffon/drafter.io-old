@@ -4,7 +4,7 @@ import Image from "next/image";
 
 export function Navbar() {
   const user = useUser();
-  const { isLoaded, isSignedIn, user: userProps } = user;
+  const { user: userProps } = user;
 
   return (
     <>

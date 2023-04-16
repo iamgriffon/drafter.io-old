@@ -11,7 +11,7 @@ interface BlueSideProps {
 
 export function BlueSide({ blueSide, selectSlot, isWinner }: BlueSideProps) {
 
-  const {stageMode} = useMenu()
+  const { stageMode } = useMenu();
 
   return (
     <div className="flex flex-col text-2xl mt-4 gap-10">

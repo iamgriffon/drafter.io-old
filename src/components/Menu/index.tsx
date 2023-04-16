@@ -1,3 +1,4 @@
+import { GameIndicator } from "./GameIndicator";
 import { GameSeriesPicker } from "./GamePicker";
 import { GamePickerButtons } from "./GamePickerButtons";
 import { SearchBox } from "./SearchBox";
@@ -13,6 +14,7 @@ export function Menu() {
         <GameSeriesPicker />
         <GamePickerButtons />
         <WinnerPicker />
+        <GameIndicator />
       </div>
     </div>
   );

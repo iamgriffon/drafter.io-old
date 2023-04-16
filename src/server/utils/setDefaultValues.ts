@@ -132,6 +132,12 @@ export const DEFAULT_GAME_STATE: Game = {
 export const DEFAULT_MATCH_STATE: GameSeries = {
   series: "BO1",
   winner: null,
+  games: [],
+};
+
+export const DEFAULT_BO1_STATE: GameSeries = {
+  series: "BO1",
+  winner: null,
   games: [
     {
       game: 1,
@@ -141,6 +147,7 @@ export const DEFAULT_MATCH_STATE: GameSeries = {
     },
   ],
 };
+
 
 export const DEFAULT_BO3_STATE: GameSeries = {
   series: "BO3",

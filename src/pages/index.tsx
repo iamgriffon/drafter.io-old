@@ -43,10 +43,6 @@ const Home: NextPage = () => {
   }, [blueSide, redSide, selectedMatch]);
 
   useEffect(() => {
-    console.log("Updated Matches", matches.games);
-  }, [matches]);
-
-  useEffect(() => {
     if (!selectedMatch) return;
     setBlueSide(selectedMatch?.blueSide);
     setRedSide(selectedMatch?.redSide);

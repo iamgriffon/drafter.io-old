@@ -1,57 +1,74 @@
 import { useMenu } from "@/context/MenuContext";
-import { Game } from "@/types/draft";
+import { useCallback, useEffect, useRef, useState } from "react";
+
+const baseStyle =
+  "inline-block transform -skew-x-12 px-3 py-2 mt-1 overflow-hidden font-bold border-2 focus:border-4 disabled:border-gray-600 disabled:text-gray-600";
 
 export function GamePickerButtons() {
-  const hasWinner = (winner: "red" | "blue" | "not" | null) => {
-    switch (winner) {
-      case "red":
-        return "inline-block transform -skew-x-12 border-red-500 text-red-500 px-3 py-2 mt-1 overflow-hidden font-bold border-4 focus:border-2";
-      case "blue":
-        return "inline-block transform -skew-x-12 border-blue-500 text-blue-500 px-3 py-2 mt-1 overflow-hidden border-2 font-bold border-4 focus:border-2";
-      case null:
-        return "inline-block transform -skew-x-12 border-2 text-white px-3 py-2 mt-1 overflow-hidden font-bold border-2 focus:border-4";
-      default:
-        return "inline-block transform -skew-x-12 border-2 text-white px-3 py-2 mt-1 overflow-hidden font-bold border-2 focus:border-4";
-    }
-  };
-  const { matches, setSelectedMatch, selectedMatch, stageMode, activeIndex } =
-    useMenu();
+  const { matches, setSelectedMatch, setMatches, stageMode, selectedMatch } = useMenu();
+  const [currentMatch, setCurrentMatch] = useState(0);
 
-  function handleClick(match: Game){
-    const currentMatchWinner = matches.games.find((match) => match.game === selectedMatch?.game)?.winner!
-    setSelectedMatch({
-      game: match.game, 
-      blueSide: match.blueSide,
-      redSide: match.redSide,
-      winner: currentMatchWinner!
-    })
-  }
+  useEffect(() => {
+    const latestMatch = matches.games.findIndex((game) => game.winner === null);
+    if (latestMatch >= 0) setCurrentMatch(latestMatch);
+  }, [matches]);
 
-   
+  useEffect(() => {
+    setCurrentMatch(0);
+  }, [setMatches]);
+
+  const watchForSeriesWinner = useCallback(() => {
+    const blueWins = matches.games.filter(
+      (game) => game.winner === "blue"
+    ).length;
+    const redWins = matches.games.filter(
+      (game) => game.winner === "red"
+    ).length;
+
+    if (
+      (stageMode &&
+        blueWins > redWins &&
+        blueWins >= Math.ceil(matches.games.length / 2)) ||
+      (redWins > blueWins && redWins >= Math.ceil(matches.games.length / 2))
+    ) {
+      return matches.games.filter((match) => match.winner !== null);
+    } else return matches.games;
+  }, [stageMode, matches.games]);
+
+  let pickerMatches = watchForSeriesWinner();
+
   return (
     <div className="flex gap-3 relative">
-      {matches.games.map((match, index) => {
-        if(stageMode && (index <= activeIndex)){
-          return (
-            <button
-              key={index}
-              className={`${hasWinner(match.winner)}}`}
-              onClick={() => handleClick(match)}
-            >
-              Game {match.game}
-            </button>
-          );
-        } else if(!stageMode) {
-          return (
-            <button
-              key={index}
-              className={`${hasWinner(match.winner)}`}
-              onClick={() => handleClick(match)}
-            >
-              Game {match.game}
-            </button>
-          );
-        }
+      {pickerMatches.map((game, index) => {
+        const isDisabled = stageMode && index > currentMatch;
+
+        const winnerStyle = () => {
+          let styles;
+          if (game.winner === "blue") {
+            styles = `${baseStyle} border-blue-600 text-blue-600`;
+          }
+          if (game.winner === "red") {
+            styles = `${baseStyle} border-red-600 text-red-600`;
+          }
+          if (game.winner === null) {
+            styles = `${baseStyle} border-white text-white`;
+          }
+          return styles;
+        };
+
+        return (
+          <button
+            key={index}
+            className={baseStyle + winnerStyle()}
+            onClick={() => {
+              setSelectedMatch(game);
+            }}
+            autoFocus={index === 0}
+            disabled={isDisabled}
+          >
+            Game {game.game}
+          </button>
+        );
       })}
     </div>
   );

@@ -156,7 +156,6 @@ export const DraftProvider = ({
     });
   }, [blueSide, redSide, setChampions]);
 
-
   useEffect(() => {
     handlePick(champion, selectedSlot);
     handleChampionDraftability();

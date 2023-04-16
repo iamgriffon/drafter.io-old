@@ -12,7 +12,7 @@ interface RedSideProps {
 
 export function RedSide({redSide, selectSlot, isWinner}: RedSideProps) {
 
-  const { stageMode } = useMenu()
+  const { stageMode } = useMenu();
 
   return (
     <div className="flex flex-col text-2xl mt-4 gap-10">

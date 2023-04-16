@@ -18,20 +18,19 @@ type Champion = {
 };
 
 interface MenuContextProps {
-  activeIndex: number;
   champions: Champion[] | undefined;
   matches: GameSeries;
   setMatches: Dispatch<SetStateAction<GameSeries>>;
-  searchChampion: string;
-  stageMode: boolean;
-  winnerTeam: MatchWinner;
-  filterChampionBySearch: (param: string) => void;
-  handleToggle: () => void;
   selectedMatch: Game | null;
-  setSelectedMatch: Dispatch<SetStateAction<Game | null>>;
-  setActiveIndex: Dispatch<SetStateAction<number>>;
-  setWinnerTeam: Dispatch<SetStateAction<MatchWinner>>;
-  isGameOver: boolean;
+  setSelectedMatch: Dispatch<SetStateAction<Game | null>>; 
+  searchChampion: string;
+  filterChampionBySearch: (param: string) => void;
+  stageMode: boolean;
+  setStageMode: Dispatch<SetStateAction<boolean>>;
+  winnerTeam: MatchWinner,
+  setWinnerTeam: Dispatch<SetStateAction<MatchWinner>>
+  isGameOver: boolean
+  purgeGameWinners: () => void;
 }
 
 interface MenuProviderProps {
@@ -60,16 +59,6 @@ export const MenuProvider = ({
   const [winnerTeam, setWinnerTeam] = useState<MatchWinner>(null);
   const [searchChampion, setSearchChampion] = useState("");
   const initialQuery = trpc.champion.fetchChampions.useQuery();
-  const [activeIndex, setActiveIndex] = useState(0);
-
-  
-  const setCounter = useCallback(() => {
-    if (isGameOver) return;
-    else {
-      setActiveIndex(activeIndex + 1);
-    }
-  }, [isGameOver, activeIndex]);
-
 
   const handleSetGameWinner = useCallback(() => {
     if (selectedMatch === null) return;
@@ -90,9 +79,8 @@ export const MenuProvider = ({
       });
       setSelectedMatch(null);
       setWinnerTeam(null);
-      setCounter()
     }
-  }, [selectedMatch, winnerTeam, setMatches, setSelectedMatch, setCounter]);
+  }, [selectedMatch, winnerTeam, setMatches, setSelectedMatch]);
 
   const detectSeriesWinner = useCallback(
     (games: Game[]): MatchWinner | null => {
@@ -109,99 +97,58 @@ export const MenuProvider = ({
     },
     []
   );
-
-  const spliceGamesArray = useCallback(
-    (games: Game[]): Game[] => {
-      const seriesWinner = detectSeriesWinner(games);
-      if (stageMode && seriesWinner) {
-        const totalMatches = games.reduce((acc, game) => {
-          if (game.winner === "red" || game.winner === "blue") {
-            acc++;
-          }
-          return acc;
-        }, 0);
-        return games.slice(0, totalMatches);
-      } else {
-        return games;
+  function purgeGameWinners(){
+    setMatches(matches => {
+      const purgeGames = matches.games.map(games => {
+        return {
+          ...games,
+          winner: null
+        }
+      });
+      return {
+        ...matches,
+        winner: null,
+        games: purgeGames
       }
-    },
-    [stageMode, detectSeriesWinner]
-  );
+    })
+  };
 
   useEffect(() => {
-    const seriesWinner = detectSeriesWinner(matches.games);
-    const splicedGames = spliceGamesArray(matches.games);
-
+    const seriesWinner = detectSeriesWinner(matches.games);;
     if (seriesWinner !== matches.winner) {
       setMatches((prevMatches) => ({ ...prevMatches, winner: seriesWinner }));
-    }
-
-
-    if (JSON.stringify(splicedGames) !== JSON.stringify(matches.games)) {
-      setMatches((prevMatches) => ({ ...prevMatches, games: splicedGames }));
       setIsGameOver(true);
     }
   }, [
     matches,
     detectSeriesWinner,
-    spliceGamesArray,
     setMatches,
-    setSelectedMatch,
   ]);
 
   useEffect(() => {
     handleSetGameWinner();
   }, [handleSetGameWinner, selectedMatch, setSelectedMatch]);
 
-  useEffect(() => {}, [isGameOver, activeIndex]);
-
-  function handleToggle() {
-    setStageMode(!stageMode);
-    if (stageMode.valueOf() === false) setIsGameOver(false);
-    setMatches((prevState) => {
-      const updatedMatches = prevState.games.map((game) => {
-        if (selectedMatch?.game === game.game) {
-          return {
-            ...game,
-            winner: selectedMatch.winner,
-          };
-        } else {
-          return {
-            ...game,
-            winner: null,
-          };
-        }
-      });
-      return {
-        ...prevState,
-        games: updatedMatches,
-      };
-    });
-    setActiveIndex(0);
-    setSelectedMatch(null);
-  }
-
   function filterChampionBySearch(champion: string) {
     setSearchChampion(champion);
-  }
+  };
 
   return (
     <MenuContext.Provider
       value={{
         matches,
-        isGameOver,
         setMatches,
         selectedMatch,
         setSelectedMatch,
-        stageMode,
-        handleToggle,
         searchChampion,
+        stageMode,
+        setStageMode,
         filterChampionBySearch,
         champions,
         winnerTeam,
         setWinnerTeam,
-        activeIndex,
-        setActiveIndex,
+        isGameOver,
+        purgeGameWinners
       }}
     >
       {children}

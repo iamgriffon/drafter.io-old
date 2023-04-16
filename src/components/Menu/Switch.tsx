@@ -1,7 +1,13 @@
 import { useMenu } from "@/context/MenuContext";
 
 export function Switch() {
-  const { stageMode, handleToggle } = useMenu();
+  const { stageMode, setStageMode, purgeGameWinners } = useMenu();
+
+  function handleToggle(){
+    setStageMode(!stageMode);
+    purgeGameWinners();
+  } 
+  
   const toggleClass = " transform translate-x-5";
 
   return (
@@ -12,7 +18,7 @@ export function Switch() {
           className={`md:w-13 md:h-7 w-[3.4rem] h-4 flex items-center rounded-full p-1 cursor-pointer ${
             stageMode ? "bg-green-400" : "bg-cyan-400"
           }`}
-          onClick={handleToggle}
+          onClick={() => handleToggle()}
         >
           {/* Switch */}
           <div
