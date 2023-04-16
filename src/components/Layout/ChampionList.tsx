@@ -15,16 +15,16 @@ export function ChampionList({champions, handleClickChampion, selectedChampion }
   } = useMenu();
 
   useEffect(() => {
-  handleClickChampion(selectedChampion)
-  },[handleClickChampion, selectedChampion])
+    handleClickChampion(selectedChampion);
+  },[handleClickChampion, selectedChampion]);
 
   const filteredChampions = [...champions].length
     ? champions.filter((champion) =>
-        champion.name.toLowerCase().includes(searchChampion.toLowerCase())
-      )
+      champion.name.toLowerCase().includes(searchChampion.toLowerCase())
+    )
     : [];
 
-    if (!champions) return <>Loading</>
+  if (!champions) return <>Loading</>;
 
   return (
     <div
@@ -33,10 +33,10 @@ export function ChampionList({champions, handleClickChampion, selectedChampion }
     >
       <div className="grid grid-cols-10 m-3 p-3 gap-3 items-center">
         {filteredChampions.map((champion, index) => (
-          <div key={index} className={`${champion.name === selectedChampion.name ? 'border-2 border-white' : ''}`}>
+          <div key={index} className={`${champion.name === selectedChampion.name ? "border-2 border-white" : ""}`}>
             {champion.draftable === true && (
               <Image
-              onClick={() => handleClickChampion(champion)}
+                onClick={() => handleClickChampion(champion)}
                 width={75}
                 height={75}
                 src={champion.image}

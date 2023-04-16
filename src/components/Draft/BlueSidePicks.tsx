@@ -17,7 +17,7 @@ export function BlueSide({ blueSide, selectSlot, isWinner }: BlueSideProps) {
     <div className="flex flex-col text-2xl mt-4 gap-10">
       <div className="flex items-center justify-end">
         <h1 className="font-bold">BLUE SIDE</h1>
-      { stageMode && isWinner === 'blue' && <><FaCrown className='mx-3' size={28} /><strong>GG!</strong> </>}
+        { stageMode && isWinner === "blue" && <><FaCrown className='mx-3' size={28} /><strong>GG!</strong> </>}
       </div>
 
       {blueSide.picks.map((pick, index) => (

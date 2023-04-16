@@ -1,3 +1,18 @@
 {
-  "extends": "next/core-web-vitals"
-}
+  "parserOptions": {
+    "ecmaVersion": "latest",
+    "sourceType": "module"
+},
+    "plugins": [
+
+    ],
+    "extends": [
+     "next",
+     "prettier"
+    ],
+    "rules": {
+      "quotes": ["error", "double"],
+      "indent": ["error", 2],
+      "semi": ["error", "always"]
+    }
+  }

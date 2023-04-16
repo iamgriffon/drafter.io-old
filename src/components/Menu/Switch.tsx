@@ -34,7 +34,7 @@ export function Switch() {
         <p className="font-bold">
           {stageMode ? "Stage Mode" : "Scrim Mode"}
         </p>
-        <span className="text-sm  flex-nowrap">{stageMode ? 'One game at a time' : 'Pick games freely'}</span>
+        <span className="text-sm  flex-nowrap">{stageMode ? "One game at a time" : "Pick games freely"}</span>
       </div>
     </div>
   );

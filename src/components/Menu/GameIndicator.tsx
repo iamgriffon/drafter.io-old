@@ -1,4 +1,4 @@
-import { useMenu } from "@/context/MenuContext"
+import { useMenu } from "@/context/MenuContext";
 
 export function GameIndicator(){
 
@@ -9,5 +9,5 @@ export function GameIndicator(){
       <p className="font-bold text-sm"> Drafting in:</p>
       {selectedMatch?.game ? <span className="text-md px-2">Game {selectedMatch?.game}</span> : null}
     </div>
-  )
+  );
 }

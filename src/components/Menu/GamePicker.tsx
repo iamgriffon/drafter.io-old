@@ -14,25 +14,25 @@ export function GameSeriesPicker() {
     const { value } = Event.target;
 
     switch (value) {
-      case "BO1":
-          setMatches(DEFAULT_BO1_STATE);
-          break;
-      case "BO3":
-          setMatches(DEFAULT_BO3_STATE);
-          break;
-      case "BO5":
-          setMatches(DEFAULT_BO5_STATE);
-          break;
-      default: 
-        return;
+    case "BO1":
+      setMatches(DEFAULT_BO1_STATE);
+      break;
+    case "BO3":
+      setMatches(DEFAULT_BO3_STATE);
+      break;
+    case "BO5":
+      setMatches(DEFAULT_BO5_STATE);
+      break;
+    default: 
+      return;
     }
     selectFirstGame();
   },[setMatches, selectFirstGame]);
 
-    useEffect(() => {
-      setSelectedMatch(matches.games[0]!);
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    },[]);
+  useEffect(() => {
+    setSelectedMatch(matches.games[0]!);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[]);
 
 
   return (

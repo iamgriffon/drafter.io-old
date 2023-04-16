@@ -100,7 +100,7 @@ export const MenuProvider = ({
   );
   
   useEffect(() => {
-    const seriesWinner = detectSeriesWinner(matches.games);;
+    const seriesWinner = detectSeriesWinner(matches.games);
     if (seriesWinner !== matches.winner) {
       setMatches((prevMatches) => ({ ...prevMatches, winner: seriesWinner }));
       setIsGameOver(true);
@@ -121,19 +121,19 @@ export const MenuProvider = ({
         return {
           ...games,
           winner: null
-        }
+        };
       });
       return {
         ...matches,
         winner: null,
         games: purgeGames
-      }
-    })
-  };
+      };
+    });
+  }
 
   function filterChampionBySearch(champion: string) {
     setSearchChampion(champion);
-  };
+  }
 
   function selectFirstGame(){
     setSelectedMatch(matches.games[0]!);

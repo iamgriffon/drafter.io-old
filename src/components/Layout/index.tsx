@@ -1,7 +1,7 @@
-import Head from "next/head"
-import { ReactNode } from "react"
-import { Menu } from "../Menu"
-import { Navbar } from "./Navbar"
+import Head from "next/head";
+import { ReactNode } from "react";
+import { Menu } from "../Menu";
+import { Navbar } from "./Navbar";
 
 interface LayoutProps {
   children: ReactNode
@@ -17,5 +17,5 @@ export function Layout({children}: LayoutProps){
       <Menu />
       <main>{children}</main>
     </div>
-  )
+  );
 }
