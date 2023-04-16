@@ -7,7 +7,7 @@ export function GameIndicator(){
   return (
     <div className="flex items-center">
       <p className="font-bold text-sm"> Drafting in:</p>
-      <span className="text-md px-2">Game {selectedMatch?.game}</span>
+      {selectedMatch?.game ? <span className="text-md px-2">Game {selectedMatch?.game}</span> : null}
     </div>
   )
 }

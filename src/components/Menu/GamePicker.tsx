@@ -7,7 +7,7 @@ import {
 import { ChangeEvent, useCallback, useEffect } from "react";
 
 export function GameSeriesPicker() {
-  const { setMatches, setSelectedMatch, matches } = useMenu();
+  const { setMatches, setSelectedMatch, matches, selectFirstGame } = useMenu();
 
   const handlePickSeries = useCallback((Event: ChangeEvent<HTMLSelectElement>) => {
     Event.stopPropagation();
@@ -25,7 +25,9 @@ export function GameSeriesPicker() {
           break;
       default: 
         return;
-    }},[setMatches]);
+    }
+    selectFirstGame();
+  },[setMatches, selectFirstGame]);
 
     useEffect(() => {
       setSelectedMatch(matches.games[0]!);

@@ -31,6 +31,7 @@ interface MenuContextProps {
   setWinnerTeam: Dispatch<SetStateAction<MatchWinner>>
   isGameOver: boolean
   purgeGameWinners: () => void;
+  selectFirstGame: () => void;
 }
 
 interface MenuProviderProps {
@@ -62,6 +63,7 @@ export const MenuProvider = ({
 
   const handleSetGameWinner = useCallback(() => {
     if (selectedMatch === null) return;
+    if (!selectedMatch || !winnerTeam) return;
     if (selectedMatch && winnerTeam) {
       setMatches((prevState) => {
         return {
@@ -77,10 +79,9 @@ export const MenuProvider = ({
           }),
         };
       });
-      setSelectedMatch(null);
       setWinnerTeam(null);
     }
-  }, [selectedMatch, winnerTeam, setMatches, setSelectedMatch]);
+  }, [selectedMatch, winnerTeam, setMatches]);
 
   const detectSeriesWinner = useCallback(
     (games: Game[]): MatchWinner | null => {
@@ -97,6 +98,23 @@ export const MenuProvider = ({
     },
     []
   );
+  
+  useEffect(() => {
+    const seriesWinner = detectSeriesWinner(matches.games);;
+    if (seriesWinner !== matches.winner) {
+      setMatches((prevMatches) => ({ ...prevMatches, winner: seriesWinner }));
+      setIsGameOver(true);
+    }
+  }, [
+    matches,
+    detectSeriesWinner,
+    setMatches,
+  ]);
+  
+  useEffect(() => {
+    handleSetGameWinner();
+  }, [handleSetGameWinner, selectedMatch, setSelectedMatch]);
+  
   function purgeGameWinners(){
     setMatches(matches => {
       const purgeGames = matches.games.map(games => {
@@ -113,25 +131,13 @@ export const MenuProvider = ({
     })
   };
 
-  useEffect(() => {
-    const seriesWinner = detectSeriesWinner(matches.games);;
-    if (seriesWinner !== matches.winner) {
-      setMatches((prevMatches) => ({ ...prevMatches, winner: seriesWinner }));
-      setIsGameOver(true);
-    }
-  }, [
-    matches,
-    detectSeriesWinner,
-    setMatches,
-  ]);
-
-  useEffect(() => {
-    handleSetGameWinner();
-  }, [handleSetGameWinner, selectedMatch, setSelectedMatch]);
-
   function filterChampionBySearch(champion: string) {
     setSearchChampion(champion);
   };
+
+  function selectFirstGame(){
+    setSelectedMatch(matches.games[0]!);
+  }
 
   return (
     <MenuContext.Provider
@@ -148,7 +154,8 @@ export const MenuProvider = ({
         winnerTeam,
         setWinnerTeam,
         isGameOver,
-        purgeGameWinners
+        purgeGameWinners,
+        selectFirstGame
       }}
     >
       {children}

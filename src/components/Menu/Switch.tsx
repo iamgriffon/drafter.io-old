@@ -1,11 +1,12 @@
 import { useMenu } from "@/context/MenuContext";
 
 export function Switch() {
-  const { stageMode, setStageMode, purgeGameWinners } = useMenu();
+  const { stageMode, setStageMode, purgeGameWinners, selectFirstGame } = useMenu();
 
   function handleToggle(){
     setStageMode(!stageMode);
     purgeGameWinners();
+    selectFirstGame();
   } 
   
   const toggleClass = " transform translate-x-5";

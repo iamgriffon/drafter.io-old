@@ -1,10 +1,10 @@
 import { useMenu } from "@/context/MenuContext";
 
 export function WinnerPicker() {
-  const { setWinnerTeam, stageMode } = useMenu();
+  const { setWinnerTeam } = useMenu();
 
   return (
-    <div className="flex pl-3 left-[76%] mt-1.5 justify-start flex-col items-center">
+    <div className="flex pl-3 left-[76%] mt-5 justify-start flex-col items-center">
       <span className="text-xs px-[1/2] -mt-5 font-bold mb-2">Pick Winner</span>
       <div className="flex gap-3">
         <button

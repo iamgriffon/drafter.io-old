@@ -2,7 +2,7 @@ import { useMenu } from "@/context/MenuContext";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 const baseStyle =
-  "inline-block transform -skew-x-12 px-3 py-2 mt-1 overflow-hidden font-bold border-2 focus:border-4 disabled:border-gray-600 disabled:text-gray-600";
+  "inline-block transform text-[0.9rem] -skew-x-12 px-3 py-2 mt-1 w-20 overflow-hidden font-bold border-2 focus:border-4 disabled:border-gray-600 disabled:text-gray-600";
 
 export function GamePickerButtons() {
   const { matches, setSelectedMatch, setMatches, stageMode, selectedMatch } = useMenu();
