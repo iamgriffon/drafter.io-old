@@ -1,11 +1,12 @@
 import { useMenu } from "@/context/MenuContext";
 import { DraftPositions, Draft, MatchWinner } from "@/types/draft";
 import Image from "next/image";
+import { Dispatch, SetStateAction } from "react";
 import { FaCrown } from "react-icons/fa";
 
 interface BlueSideProps {
   blueSide: Draft;
-  selectSlot: (param: DraftPositions) => void;
+  selectSlot: Dispatch<SetStateAction<DraftPositions>>;
   isWinner: MatchWinner;
 }
 
