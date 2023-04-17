@@ -114,7 +114,7 @@ export const DraftProvider = ({
           });
         } else if (
           selectedSlot &&
-          (selectedSlot.startsWith("F") || selectedSlot === "FIRST BAN" || selectedSlot === "LAST BAN")
+          (selectedSlot.startsWith("F") || selectedSlot === "FIRST BAN")
         ) {
           setBlueSide((prevState) => {
             const updatedBans = prevState.bans.map((ban) => {
