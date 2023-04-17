@@ -95,8 +95,7 @@ export const DraftProvider = ({
             return { ...prevState, picks: updatedPicks };
           });
         } else if (
-          (selectedSlot && selectedSlot.startsWith("L")) ||
-          selectedSlot === "LAST BAN"
+          (selectedSlot && selectedSlot.startsWith("L"))
         ) {
           setRedSide((prevState) => {
             const updatedBans = prevState.bans.map((ban) => {
@@ -115,7 +114,7 @@ export const DraftProvider = ({
           });
         } else if (
           selectedSlot &&
-          (selectedSlot.startsWith("F") || selectedSlot === "FIRST BAN")
+          (selectedSlot.startsWith("F") || selectedSlot === "FIRST BAN" || selectedSlot === "LAST BAN")
         ) {
           setBlueSide((prevState) => {
             const updatedBans = prevState.bans.map((ban) => {

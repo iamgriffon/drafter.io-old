@@ -9,7 +9,7 @@ interface LayoutProps {
 
 export function Layout({children}: LayoutProps){
   return (
-    <div className="bg-gray-800 w-full h-fit flex flex-col justify-start items-center">
+    <div className="bg-gray-800 w-full h-[100vh] flex flex-col justify-start items-center">
       <Head>
         <title>Drafter.io - Home</title>
       </Head>

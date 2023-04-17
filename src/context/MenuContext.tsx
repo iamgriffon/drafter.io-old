@@ -1,6 +1,8 @@
+import { DEFAULT_BO1_STATE, DEFAULT_BO3_STATE, DEFAULT_BO5_STATE } from "@/server/utils/setDefaultValues";
 import { Game, GameSeries, MatchWinner } from "@/types/draft";
 import { trpc } from "@/utils/trpc";
 import React, {
+  ChangeEvent,
   createContext,
   Dispatch,
   ReactNode,
@@ -32,6 +34,7 @@ interface MenuContextProps {
   isGameOver: boolean
   purgeGameWinners: () => void;
   selectFirstGame: () => void;
+  handlePickSeries: (Event: ChangeEvent<HTMLSelectElement>) => void;
 }
 
 interface MenuProviderProps {
@@ -135,9 +138,30 @@ export const MenuProvider = ({
     setSearchChampion(champion);
   }
 
-  function selectFirstGame(){
-    setSelectedMatch(matches.games[0]!);
-  }
+  const selectFirstGame = useCallback(() => {
+    if (matches.games.length > 0)setSelectedMatch(matches.games[0]!);
+  },[matches.games, setSelectedMatch]);
+
+
+  const handlePickSeries = useCallback((Event: ChangeEvent<HTMLSelectElement>) => {
+    Event.stopPropagation();
+    const { value } = Event.target;
+
+    switch (value) {
+    case "BO1":
+      setMatches(DEFAULT_BO1_STATE);
+      break;
+    case "BO3":
+      setMatches(DEFAULT_BO3_STATE);
+      break;
+    case "BO5":
+      setMatches(DEFAULT_BO5_STATE);
+      break;
+    default: 
+      return;
+    }
+    selectFirstGame();
+  },[setMatches, selectFirstGame]);
 
   return (
     <MenuContext.Provider
@@ -155,7 +179,8 @@ export const MenuProvider = ({
         setWinnerTeam,
         isGameOver,
         purgeGameWinners,
-        selectFirstGame
+        selectFirstGame,
+        handlePickSeries
       }}
     >
       {children}

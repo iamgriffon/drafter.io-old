@@ -1,7 +1,7 @@
 export type BlueSidePickPosition = "FIRST PICK" | "B2" | "B3" | "B4" | "B5";
 export type RedSidePickPosition = "R1" | "R2" | "R3" | "R4" | "LAST PICK";
 export type BlueSideBanPosition = "FIRST BAN" | "F2" | "F3" | "F4" | "F5";
-export type RedSideBanPosition = "L1" | "L2" | "L3" | "L4" | "LAST BAN";
+export type RedSideBanPosition = "L1" | "L2" | "L3" | "L4" | "L5";
 
 export type MatchWinner = "red" | "blue" |  null;
 

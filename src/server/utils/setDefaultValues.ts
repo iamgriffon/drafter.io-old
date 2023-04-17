@@ -41,7 +41,7 @@ export const DEFAULT_RED_SIDE_DRAFT_STATE: Draft = {
       champion: { name: "", image: "", id: "", draftable: true },
     },
     {
-      position: "LAST BAN",
+      position: "L5",
       champion: { name: "", image: "", id: "", draftable: true },
     },
   ],

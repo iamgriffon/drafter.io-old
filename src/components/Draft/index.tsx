@@ -5,6 +5,8 @@ import { BlueSideBans } from "./BlueSideBans";
 import { BlueSide } from "./BlueSidePicks";
 import { RedSideBans } from "./RedSideBans";
 import { RedSide } from "./RedSidePicks";
+import { SideBans } from "./SideBans";
+import { SidePicks } from "./SidePicks";
 
 export function Draft() {
     
@@ -31,13 +33,13 @@ export function Draft() {
   return (
     <>
       <main className="flex gap-16">
-        <BlueSide isWinner={isWinner} blueSide={blueSide} selectSlot={selectSlot} />
+        <SidePicks title="BLUE SIDE" isWinner={isWinner} side={blueSide} selectSlot={selectSlot} />
         {RenderChampions()}
-        <RedSide isWinner={isWinner} redSide={redSide} selectSlot={selectSlot} />
+        <SidePicks title="RED SIDE" isWinner={isWinner} side={redSide} selectSlot={selectSlot} />
       </main>
       <footer className="flex items-center justify-evenly mt-4 gap-16">
-        <BlueSideBans blueSide={blueSide} selectSlot={selectSlot} />
-        <RedSideBans redSide={redSide} selectSlot={selectSlot} />
+        <SideBans side={blueSide} selectSlot={selectSlot} />
+        <SideBans side={redSide} selectSlot={selectSlot} />
       </footer>
     </>
   );
