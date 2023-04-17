@@ -1,10 +1,6 @@
 import { useDraft } from "@/context/DraftContext";
 import { useMenu } from "@/context/MenuContext";
 import { ChampionList } from "../Layout/ChampionList";
-import { BlueSideBans } from "./BlueSideBans";
-import { BlueSide } from "./BlueSidePicks";
-import { RedSideBans } from "./RedSideBans";
-import { RedSide } from "./RedSidePicks";
 import { SideBans } from "./SideBans";
 import { SidePicks } from "./SidePicks";
 
