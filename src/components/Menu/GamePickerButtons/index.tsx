@@ -67,10 +67,11 @@ export function GamePickerButtons() {
             autoFocus={index === 0}
             disabled={isDisabled}
           >
-						Game {game.game}
+            {stageMode ? "Game" : "Draft"} {game.game}
           </button>
         );
       })}
     </div>
   );
 }
+

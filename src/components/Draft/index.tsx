@@ -11,7 +11,7 @@ export function Draft() {
   const { matches } = useMenu();
 
   const isWinner = matches.winner;
-
+  
   function RenderChampions() {
     if (champions) {
       return (

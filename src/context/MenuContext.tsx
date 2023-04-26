@@ -1,5 +1,10 @@
-import { DEFAULT_BO1_STATE, DEFAULT_BO3_STATE, DEFAULT_BO5_STATE } from "@/server/utils/setDefaultValues";
+import {
+  DEFAULT_BO1_STATE,
+  DEFAULT_BO3_STATE,
+  DEFAULT_BO5_STATE,
+} from "@/server/utils/setDefaultValues";
 import { Game, GameSeries, MatchWinner } from "@/types/draft";
+import { MockDraft } from "@/utils/mockDraft";
 import { trpc } from "@/utils/trpc";
 import React, {
   ChangeEvent,
@@ -14,40 +19,41 @@ import React, {
 } from "react";
 
 type Champion = {
-  id: string;
-  name: string;
-  image: string;
+	id: string;
+	name: string;
+	image: string;
 };
 
 interface MenuContextProps {
-  champions: Champion[] | undefined;
-  matches: GameSeries;
-  setMatches: Dispatch<SetStateAction<GameSeries>>;
-  selectedMatch: Game | null;
-  setSelectedMatch: Dispatch<SetStateAction<Game | null>>; 
-  searchChampion: string;
-  filterChampionBySearch: (param: string) => void;
-  stageMode: boolean;
-  setStageMode: Dispatch<SetStateAction<boolean>>;
-  winnerTeam: MatchWinner,
-  setWinnerTeam: Dispatch<SetStateAction<MatchWinner>>
-  isGameOver: boolean
-  purgeGameWinners: () => void;
-  selectFirstGame: () => void;
-  handlePickSeries: (Event: ChangeEvent<HTMLSelectElement>) => void;
+	champions: Champion[] | undefined;
+	matches: GameSeries;
+	setMatches: Dispatch<SetStateAction<GameSeries>>;
+	selectedMatch: Game | null;
+	setSelectedMatch: Dispatch<SetStateAction<Game | null>>;
+	searchChampion: string;
+	filterChampionBySearch: (param: string) => void;
+	stageMode: boolean;
+	setStageMode: Dispatch<SetStateAction<boolean>>;
+	winnerTeam: MatchWinner;
+	setWinnerTeam: Dispatch<SetStateAction<MatchWinner>>;
+	isGameOver: boolean;
+	purgeGameWinners: () => void;
+	selectFirstGame: () => void;
+	handlePickSeries: (Event: ChangeEvent<HTMLSelectElement>) => void;
+  purgeDraft: () => void;
 }
 
 interface MenuProviderProps {
-  children: ReactNode;
-  champions: Champion[];
-  matches: GameSeries;
-  setMatches: Dispatch<SetStateAction<GameSeries>>;
-  selectedMatch: Game | null;
-  setSelectedMatch: Dispatch<SetStateAction<Game | null>>;
+	children: ReactNode;
+	champions: Champion[];
+	matches: GameSeries;
+	setMatches: Dispatch<SetStateAction<GameSeries>>;
+	selectedMatch: Game | null;
+	setSelectedMatch: Dispatch<SetStateAction<Game | null>>;
 }
 
 export const MenuContext = createContext<MenuContextProps>(
-  {} as MenuContextProps
+	{} as MenuContextProps
 );
 
 export const MenuProvider = ({
@@ -101,35 +107,31 @@ export const MenuProvider = ({
     },
     []
   );
-  
+
   useEffect(() => {
     const seriesWinner = detectSeriesWinner(matches.games);
     if (seriesWinner !== matches.winner) {
       setMatches((prevMatches) => ({ ...prevMatches, winner: seriesWinner }));
       setIsGameOver(true);
     }
-  }, [
-    matches,
-    detectSeriesWinner,
-    setMatches,
-  ]);
-  
+  }, [matches, detectSeriesWinner, setMatches]);
+
   useEffect(() => {
     handleSetGameWinner();
   }, [handleSetGameWinner, selectedMatch, setSelectedMatch]);
-  
-  function purgeGameWinners(){
-    setMatches(matches => {
-      const purgeGames = matches.games.map(games => {
+
+  function purgeGameWinners() {
+    setMatches((matches) => {
+      const purgeGames = matches.games.map((games) => {
         return {
           ...games,
-          winner: null
+          winner: null,
         };
       });
       return {
         ...matches,
         winner: null,
-        games: purgeGames
+        games: purgeGames,
       };
     });
   }
@@ -139,29 +141,47 @@ export const MenuProvider = ({
   }
 
   const selectFirstGame = useCallback(() => {
-    if (matches.games.length > 0)setSelectedMatch(matches.games[0]!);
-  },[matches.games, setSelectedMatch]);
+    if (matches.games.length > 0) setSelectedMatch(matches.games[0]!);
+  }, [matches.games, setSelectedMatch]);
 
 
-  const handlePickSeries = useCallback((Event: ChangeEvent<HTMLSelectElement>) => {
-    Event.stopPropagation();
-    const { value } = Event.target;
+  const handlePickSeries = useCallback(
+    (Event: ChangeEvent<HTMLSelectElement>) => {
+      Event.stopPropagation();
+      const { value } = Event.target;
 
-    switch (value) {
+      switch (value) {
+      case "BO1":
+        setMatches(DEFAULT_BO1_STATE);
+        break;
+      case "BO3":
+        setMatches(DEFAULT_BO3_STATE);
+        break;
+      case "BO5":
+        setMatches(DEFAULT_BO5_STATE);
+        break;
+      default:
+        return;
+      }
+      selectFirstGame();
+    },
+    [setMatches, selectFirstGame]
+  );
+
+  function purgeDraft() {
+    const getMatchType = matches.series;
+    let purgedPicks;
+    switch (getMatchType) {
     case "BO1":
-      setMatches(DEFAULT_BO1_STATE);
-      break;
+      purgedPicks = DEFAULT_BO1_STATE;
     case "BO3":
-      setMatches(DEFAULT_BO3_STATE);
-      break;
+      purgedPicks = DEFAULT_BO3_STATE;
     case "BO5":
-      setMatches(DEFAULT_BO5_STATE);
-      break;
-    default: 
-      return;
-    }
-    selectFirstGame();
-  },[setMatches, selectFirstGame]);
+      purgedPicks = DEFAULT_BO5_STATE;
+    };
+    setMatches(purgedPicks);
+  };
+
 
   return (
     <MenuContext.Provider
@@ -180,7 +200,8 @@ export const MenuProvider = ({
         isGameOver,
         purgeGameWinners,
         selectFirstGame,
-        handlePickSeries
+        handlePickSeries,
+        purgeDraft
       }}
     >
       {children}
