@@ -89,7 +89,7 @@ export function Navbar({ importDraft }: NavbarProps) {
             </div>
           </div>
         </div>
-        <Modal label={label} closeModal={() => setOpen(false)} onSubmitModal={() => onSubmitModal()}  />
+        <Modal label={label} closeModal={() => setOpen(false)} importDraft={importDraft}  />
       </Dialog.Root>
     </>
   );

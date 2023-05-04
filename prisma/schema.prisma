@@ -19,9 +19,11 @@ model Champion {
 
 model Draft {
   id     String @id @default(cuid())
+  name   String
   link   String
   data   Json
   userId String
 
   @@index([userId])
+  @@index([link])
 }

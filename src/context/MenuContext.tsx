@@ -182,6 +182,9 @@ export const MenuProvider = ({
     setMatches(purgedPicks);
   };
 
+  useEffect(() => {
+    console.log({isGameOver: isGameOver});
+  },[isGameOver]);
 
   return (
     <MenuContext.Provider
