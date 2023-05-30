@@ -4,7 +4,6 @@ import {
   DEFAULT_BO5_STATE,
 } from "@/server/utils/setDefaultValues";
 import { Game, GameSeries, MatchWinner } from "@/types/draft";
-import { MockDraft } from "@/utils/mockDraft";
 import { trpc } from "@/utils/trpc";
 import React, {
   ChangeEvent,
@@ -68,7 +67,6 @@ export const MenuProvider = ({
   const [isGameOver, setIsGameOver] = useState<boolean>(false);
   const [winnerTeam, setWinnerTeam] = useState<MatchWinner>(null);
   const [searchChampion, setSearchChampion] = useState("");
-  const initialQuery = trpc.champion.fetchChampions.useQuery();
 
   const handleSetGameWinner = useCallback(() => {
     if (selectedMatch === null) return;
@@ -144,7 +142,6 @@ export const MenuProvider = ({
     if (matches.games.length > 0) setSelectedMatch(matches.games[0]!);
   }, [matches.games, setSelectedMatch]);
 
-
   const handlePickSeries = useCallback(
     (Event: ChangeEvent<HTMLSelectElement>) => {
       Event.stopPropagation();
@@ -181,10 +178,6 @@ export const MenuProvider = ({
     };
     setMatches(purgedPicks);
   };
-
-  useEffect(() => {
-    console.log({isGameOver: isGameOver});
-  },[isGameOver]);
 
   return (
     <MenuContext.Provider

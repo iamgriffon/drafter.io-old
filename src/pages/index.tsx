@@ -16,8 +16,35 @@ import {
 import { Menu } from "@/components/Menu";
 import { Navbar } from "@/components/Layout/Navbar";
 import Head from "next/head";
+import { trpc } from "@/utils/trpc";
+import { useUser } from "@clerk/nextjs";
+import { Draft as PrismaDraft } from "@prisma/client";
 
 const Home: NextPage = () => {
+  const user = useUser();
+  const userId = user.user?.id!;
+  const [drafts, setDrafts] = useState<PrismaDraft[] | undefined>([]);
+
+  const { refetch } = trpc.draft.fetch.useQuery(
+    {
+      user_id: userId,
+    },
+    {
+      enabled: false,
+      refetchOnMount: false,
+    }
+  );
+
+  useEffect(() => {
+    async function fetchDrafts() {
+      if (user) {
+        const response = (await refetch()).data;
+        if (response) setDrafts(response);
+      }
+    };
+    fetchDrafts();
+  }, [user, refetch]);
+  
   const [champions, setChampions] = useState<Champion[]>([]);
   const [matches, setMatches] = useState<GameSeries>(DEFAULT_MATCH_STATE);
   const [redSide, setRedSide] = useState<DraftType>(
@@ -57,12 +84,6 @@ const Home: NextPage = () => {
     },
     [setMatches]
   );
-  
-  useEffect(() => {
-    if (!selectedMatch) return;
-    setBlueSide(selectedMatch?.blueSide);
-    setRedSide(selectedMatch?.redSide);
-  }, [selectedMatch, setSelectedMatch, importDraft]);
 
   function purgeDraft() {
     const getMatchType = matches.series;
@@ -77,10 +98,15 @@ const Home: NextPage = () => {
     case "BO5":
       purgedPicks = DEFAULT_BO5_STATE;
       break;
-    };
+    }
     setMatches(purgedPicks);
   };
- 
+
+  useEffect(() => {
+    if (!selectedMatch) return;
+    setBlueSide(selectedMatch?.blueSide);
+    setRedSide(selectedMatch?.redSide);
+  }, [selectedMatch, setSelectedMatch, importDraft]);
 
   return (
     <MenuProvider
@@ -102,7 +128,10 @@ const Home: NextPage = () => {
           <Head>
             <title>Drafter.io - Home</title>
           </Head>
-          <Navbar purgeDraft={purgeDraft} importDraft={importDraft} />
+          <Navbar
+            purgeDraft={purgeDraft}
+            importDraft={importDraft}
+          />
           <Menu />
           <main>
             <Draft />

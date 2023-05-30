@@ -24,6 +24,8 @@ interface DraftContextProps {
   redSide: Draft;
   selectSlot: Dispatch<SetStateAction<DraftPositions>>;
   handleClickChampion: (param: Champion) => void;
+  id: string;
+  setId: Dispatch<SetStateAction<string>>;
 }
 
 interface DraftProviderProps {
@@ -50,6 +52,7 @@ export const DraftProvider = ({
 }: DraftProviderProps) => {
   const [champion, setChampion] = useState<Champion>(DEFAULT_CHAMPION_STATE);
   const [selectedSlot, selectSlot] = useState<DraftPositions>(null);
+  const [id, setId] = useState("");
   const initialQuery = trpc.champion.fetchChampions.useQuery();
 
   const handlePick = useCallback(
@@ -184,6 +187,8 @@ export const DraftProvider = ({
         redSide,
         selectSlot,
         handleClickChampion,
+        id,
+        setId
       }}
     >
       {children}

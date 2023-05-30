@@ -45,6 +45,7 @@ export type GameSeries = {
   series: Series;
   winner: MatchWinner;
   games: Game[];
+  id?: string
 };
 
 export type Series = "BO1" | "BO3" | "BO5";
