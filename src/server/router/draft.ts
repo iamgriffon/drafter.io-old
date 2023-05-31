@@ -90,7 +90,6 @@ export const draftRouter = createTRPCRouter({
       });
 
       if (!getDraft) {
-        console.log("Opa");
         return {
           message:
 						"We were not able to find your draft, please try again later",
@@ -107,7 +106,6 @@ export const draftRouter = createTRPCRouter({
           name: name,
         },
       });
-      console.log("Opa 2");
       return {
         message: `${res.name} has been successfuly updated!`,
         success: true,

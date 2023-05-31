@@ -70,7 +70,6 @@ export function Navbar({ importDraft, purgeDraft, selectedMatch }: NavbarProps) 
 
   const onDeleteDraft = useCallback(
     (callback: () => void) => {
-      console.log({ id: id });
       deleteDraft(
         {
           id: id,

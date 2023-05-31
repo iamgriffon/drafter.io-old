@@ -70,25 +70,6 @@ const Home: NextPage = () => {
   },[]);
 
   useEffect(() => {
-    if (selectedMatch !== null) {
-      // setMatches((prevMatches) => ({
-      //   ...prevMatches,
-      //   games: prevMatches.games.map((game, index) => {
-      //     if (game.game === selectedMatch.game) {
-      //       return {
-      //         ...game,
-      //         blueSide: blueSide,
-      //         redSide: redSide,
-      //       };
-      //     } else {
-      //       return game;
-      //     }
-      //   }),
-      // }));
-    }
-  }, [blueSide, redSide, selectedMatch]);
-
-  useEffect(() => {
     if (!selectedMatch) return;
     setBlueSide(selectedMatch?.blueSide);
     setRedSide(selectedMatch?.redSide);

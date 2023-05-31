@@ -38,7 +38,6 @@ export function RenameModal({
     setStep(0);
     setErrorMessage("");
     setSuccessMessage("");
-    console.log({name: name});
   }, []);
 
   let user_id: string;
@@ -77,7 +76,6 @@ export function RenameModal({
     }
     if (name.length < 4) {
       setErrorMessage("Error: A Draft name must be at least 4 characters long");
-      console.log("Nome muito curto");
       return false;
     }
     return true;
