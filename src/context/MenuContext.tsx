@@ -38,7 +38,7 @@ interface MenuContextProps {
 	isGameOver: boolean;
 	purgeGameWinners: () => void;
 	selectFirstGame: () => void;
-	handlePickSeries: (Event: ChangeEvent<HTMLSelectElement>) => void;
+	handlePickSeries: (param: string) => void;
   purgeDraft: () => void;
 }
 
@@ -143,9 +143,7 @@ export const MenuProvider = ({
   }, [matches.games, setSelectedMatch]);
 
   const handlePickSeries = useCallback(
-    (Event: ChangeEvent<HTMLSelectElement>) => {
-      Event.stopPropagation();
-      const { value } = Event.target;
+    (value: string) => {
 
       switch (value) {
       case "BO1":

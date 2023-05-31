@@ -1,9 +1,11 @@
-import { useMenu } from "@/context/MenuContext";
 import { IoMdSearch } from "react-icons/io";
 
-export function SearchBox() {
+interface SearchBarProps {
+  value: string;
+  onChangeValue: (param: string) => void;
+}
 
-  const { searchChampion, filterChampionBySearch } = useMenu();
+export function SearchBox({value, onChangeValue}: SearchBarProps) {
 
   return (
     <div>
@@ -15,8 +17,8 @@ export function SearchBox() {
           type="text"
           className="flex w-full max-w-3xl p-4 pl-10 text-sm border border-gray-300 rounded-lg bg-gray-600 focus:ring-blue-500 focus:border-blue-500"
           placeholder="Search Champion..."
-          value={searchChampion}
-          onChange={(event) => filterChampionBySearch(event.target.value)}
+          value={value}
+          onChange={(event) => onChangeValue(event.target.value)}
         />
       </div>
     </div>

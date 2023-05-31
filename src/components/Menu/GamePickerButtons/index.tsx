@@ -1,11 +1,13 @@
 import { useMenu } from "@/context/MenuContext";
+import { Game } from "@/types/draft";
 import { useCallback, useEffect, useState } from "react";
+import { MenuProps } from "..";
 
 const baseStyle =
 	"inline-block transform text-[0.9rem] -skew-x-12 px-3 py-2 mt-1 w-17 overflow-hidden font-bold border-2 focus:border-4 disabled:border-gray-600 disabled:text-gray-600 disabled:cursor-not-allowed";
 
-export function GamePickerButtons() {
-  const { matches, setSelectedMatch, setMatches, stageMode } =
+export function GamePickerButtons({selectMatch}: MenuProps) {
+  const { matches, setSelectedMatch, setMatches, stageMode, selectedMatch } =
 		useMenu();
   const [currentMatch, setCurrentMatch] = useState(0);
 
@@ -13,10 +15,6 @@ export function GamePickerButtons() {
     const latestMatch = matches.games.findIndex((game) => game.winner === null);
     if (latestMatch >= 0) setCurrentMatch(latestMatch);
   }, [matches]);
-
-  useEffect(() => {
-    setCurrentMatch(0);
-  }, [setMatches]);
 
   const watchForSeriesWinner = useCallback(() => {
     const blueWins = matches.games.filter(
@@ -37,6 +35,10 @@ export function GamePickerButtons() {
   }, [stageMode, matches.games]);
 
   let pickerMatches = watchForSeriesWinner();
+
+  function handleClick(game: Game){
+    selectMatch(game);
+  }
 
   return (
     <div className="flex gap-3 relative">
@@ -61,9 +63,8 @@ export function GamePickerButtons() {
           <button
             key={index}
             className={baseStyle + winnerStyle()}
-            onClick={() => {
-              setSelectedMatch(game);
-            }}
+            onClick={() => handleClick(game)
+            }
             autoFocus={index === 0}
             disabled={isDisabled}
           >

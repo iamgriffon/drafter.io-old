@@ -1,14 +1,16 @@
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
-import { BiExport, BiImport, BiTrash } from "react-icons/bi";
+import { BiExport, BiImport, BiPencil, BiTrash } from "react-icons/bi";
+import { ImPencil } from "react-icons/im";
 
 interface DropdownSubMenuProps {
   onImport: () => void;
   onShare: () => void;
   onDelete: () => void;
+  onRename: () => void;
 }
 
 export function DropdownSubMenu({
-  onImport, onShare, onDelete
+  onImport, onShare, onDelete, onRename
 }: DropdownSubMenuProps) {
   return (
     <DropdownMenu.SubContent
@@ -39,6 +41,14 @@ export function DropdownSubMenu({
         onClick={() => onDelete()}>
         Delete
         <BiTrash size={18} />
+      </DropdownMenu.Item>
+      <DropdownMenu.Separator className="border-t border-gray-300 w-[80%] self-center" />
+      <DropdownMenu.Item 
+        className="flex flex-row items-center justify-between text-gray-600 hover:text-gray-400" 
+        textValue="Delete"
+        onClick={() => onRename()}>
+        Rename
+        <BiPencil size={18} />
       </DropdownMenu.Item>
     </DropdownMenu.SubContent>
   );

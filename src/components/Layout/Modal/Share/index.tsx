@@ -2,19 +2,32 @@ import * as Dialog from "@radix-ui/react-dialog";
 import { BiLinkAlt } from "react-icons/bi";
 import { ShareModalProps } from "..";
 import { FaCheck, FaCopy } from "react-icons/fa";
-import { useState } from "react";
+import { useEffect } from "react";
+import { RiFileCopy2Fill } from "react-icons/ri";
 
 interface ButtonStepMap {
 	[key: number]: JSX.Element;
 }
 
-export function ShareModal({ closeModal, label, link }: ShareModalProps) {
-  const [step, setStep] = useState(0);
-  const [successMessage, setSuccessMessage] = useState("");
+export function ShareModal({
+  closeModal,
+  label,
+  link,
+  step,
+  setStep,
+  successMessage,
+  setSuccessMessage,
+}: ShareModalProps) {
+
+  useEffect(() => {
+    setStep(0);
+    setSuccessMessage("");
+  },[]);
+
 
   const buttonStepMap: ButtonStepMap = {
     0: (
-      <FaCopy
+      <RiFileCopy2Fill
         onClick={() => {
           navigator.clipboard.writeText(link);
           setSuccessMessage("Link copied to the clipboard!");
@@ -45,7 +58,9 @@ export function ShareModal({ closeModal, label, link }: ShareModalProps) {
         </Dialog.Close>
       </div>
       <div>
-        <p className="text-white">Click the button to copy the link to clipboard</p>
+        <p className="text-white">
+					Click the button to copy the link to clipboard
+        </p>
         <div className="flex w-full items-center justify-between gap-2">
           <div className="p-4 h-12 rounded-md w-full flex items-center bg-white">
             <BiLinkAlt
@@ -59,7 +74,7 @@ export function ShareModal({ closeModal, label, link }: ShareModalProps) {
             />
           </div>
           <button className="w-32 h-12 rounded-lg flex justify-center bg-green-500 opacity-100 font-bold text-white hover:bg-green-600 transition-colors">
-            { buttonStepMap[step] }
+            {buttonStepMap[step]}
           </button>
         </div>
       </div>

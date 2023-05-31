@@ -1,10 +1,16 @@
 import { IoMdSettings } from "react-icons/io";
 import { SignInButton, SignOutButton, useUser } from "@clerk/nextjs";
 import Image from "next/image";
-import { GameSeries } from "@/types/draft";
+import { Draft as DraftType, Game, GameSeries } from "@/types/draft";
 import { useMenu } from "@/context/MenuContext";
 import * as Dialog from "@radix-ui/react-dialog";
-import { useState, useEffect, useCallback } from "react";
+import {
+  useState,
+  useEffect,
+  useCallback,
+  Dispatch,
+  SetStateAction,
+} from "react";
 import { Modal } from "./Modal";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { DropdownSubMenu } from "../Menu/MenuDropdown";
@@ -12,10 +18,16 @@ import { Draft } from "@prisma/client";
 import { BiChevronRight } from "react-icons/bi";
 import { useDraft } from "@/context/DraftContext";
 import { trpc } from "@/utils/trpc";
+import {
+  DEFAULT_BO1_STATE,
+  DEFAULT_BLUE_SIDE_DRAFT_STATE,
+  DEFAULT_RED_SIDE_DRAFT_STATE,
+} from "@/server/utils/setDefaultValues";
 
 interface NavbarProps {
-	purgeDraft: () => void;
 	importDraft: (param: GameSeries) => void;
+	purgeDraft: () => void;
+  selectedMatch: Game | null
 }
 
 export type OperationsMapEnum =
@@ -23,12 +35,14 @@ export type OperationsMapEnum =
 	| "Export"
 	| "Share"
 	| "Delete"
-	| "Update";
+	| "Update"
+	| "Create"
+  | "Rename";
 
-export function Navbar({ importDraft }: NavbarProps) {
+export function Navbar({ importDraft, purgeDraft, selectedMatch }: NavbarProps) {
   const user = useUser();
-  const { matches, selectedMatch } = useMenu();
-  const { id } = useDraft();
+  const { matches } = useMenu();
+  const { id, setId } = useDraft();
   const { user: userProps } = user;
   const [open, setOpen] = useState(false);
   const [label, setLabel] = useState<OperationsMapEnum>("Import");
@@ -52,26 +66,45 @@ export function Navbar({ importDraft }: NavbarProps) {
       const response = (await refetch()).data;
       if (response) setDrafts(response);
     }
-  },[refetch, user]);
+  }, [refetch, user]);
 
-  const onDeleteDraft = useCallback((callback: () => void) => {
-    deleteDraft({
-      id: id
-    },{
-      onSettled: () => callback()
-    });
-  },[deleteDraft, id]);
+  const onDeleteDraft = useCallback(
+    (callback: () => void) => {
+      console.log({ id: id });
+      deleteDraft(
+        {
+          id: id,
+          user_id: userProps!.id,
+        },
+        {
+          onSettled: () => callback(),
+        }
+      );
+    },
+    [deleteDraft, id, userProps]
+  );
 
-  const onUpdateDraft = useCallback((callback: () => void) =>{
-    updateDraft({
-      id: id,
-      draft: matches,
-      name: name
-    },{
-      onSettled: () => callback()
-    });
-  },[id, matches, updateDraft, name]); 
+  const onUpdateDraft = useCallback(
+    (callback: () => void) => {
+      updateDraft(
+        {
+          link: link,
+          draft: matches,
+          name: name,
+        },
+        {
+          onSettled: () => callback(),
+        }
+      );
+    },
+    [matches, updateDraft, name, link]
+  );
 
+  const onCreateNew = useCallback(
+    (callback: () => void) => {
+      purgeDraft();
+      callback();
+    },[purgeDraft]);
 
   useEffect(() => {
     fetchDrafts();
@@ -83,7 +116,6 @@ export function Navbar({ importDraft }: NavbarProps) {
     setOpen(true);
   }
 
-
   return (
     <>
       <Dialog.Root
@@ -93,17 +125,14 @@ export function Navbar({ importDraft }: NavbarProps) {
         <DropdownMenu.Root>
           <div className="flex flex-row justify-between self-center items-center py-4 px-8 w-full max-w-[1440px] border-b-2 mb-3">
             <div className="flex flex-row gap-8">
+              <span
+                className="text-gray-100 font-bold   hover:text-gray-300 cursor-pointer"
+                onClick={() => openModal("Import")}
+              >
+                {"Import"}
+              </span>
               {!!user.isSignedIn && (
                 <>
-                  <Dialog.Trigger>
-                    <span
-                      className="text-gray-100 font-bold   hover:text-gray-300 cursor-pointer"
-                      onClick={() => openModal("Import")}
-                    >
-                      {"Import"}
-                    </span>
-                  </Dialog.Trigger>
-
                   {!!user.isSignedIn &&
 									matches.games.length > 0 &&
 									selectedMatch !== null ? (
@@ -115,10 +144,22 @@ export function Navbar({ importDraft }: NavbarProps) {
                       </button>
                     ) : null}
                   <span
+                    onClick={() => openModal("Share")}
+                    className="text-gray-100 font-bold hover:text-gray-300 cursor-pointer"
+                  >
+                    {"Share"}
+                  </span>
+                  <span
                     onClick={() => openModal("Update")}
                     className="text-gray-100 font-bold hover:text-gray-300 cursor-pointer"
                   >
                     {"Save"}
+                  </span>
+                  <span
+                    className="text-gray-100 font-bold   hover:text-gray-300 cursor-pointer"
+                    onClick={() => openModal("Create")}
+                  >
+                    {"New"}
                   </span>
                 </>
               )}
@@ -132,36 +173,45 @@ export function Navbar({ importDraft }: NavbarProps) {
               <DropdownMenu.Portal>
                 <DropdownMenu.Content
                   sideOffset={5}
-                  className="z-10 flex flex-col gap-1 w-[10rem] px-2 bg-white rounded-md p-1 shadow-md cursor-pointer"
+                  className="z-10 flex flex-col gap-1 w-[10rem] p-2 bg-white rounded-md shadow-md cursor-pointer"
                 >
                   {drafts?.map((draft, index) => (
                     <>
                       <div className="flex flex-col text-gray-600 hover:text-gray-400">
                         <DropdownMenu.Sub>
                           <DropdownMenu.SubTrigger className="flex flex-row items-center justify-between">
-                            <p className="w-[90%] self-start">{draft.name}</p>
+                            <p className="w-[90%]  text-gray-600 self-start p-2">
+                              {draft.name}
+                            </p>
                             <BiChevronRight size={24} />
                           </DropdownMenu.SubTrigger>
                           <DropdownMenu.Portal>
                             <DropdownSubMenu
-                              onDelete={() =>
+                              onDelete={() => {
+                                setId(draft.id);
                                 openModal("Delete", () => {
                                   setLink(draft.link);
                                   setName(draft.name);
-                                })
-                              }
-                              onImport={() =>
+                                });
+                              }}
+                              onImport={() => {
                                 openModal("Import", () => {
                                   setLink(draft.link);
                                   setName(draft.name);
-                                })
-                              }
+                                });
+                              }}
                               onShare={() =>
                                 openModal("Share", () => {
                                   setLink(draft.link);
                                   setName(draft.name);
                                 })
                               }
+                              onRename={() => {
+                                openModal("Rename", () => {
+                                  setName(draft.name);
+                                  setLink(draft.link);
+                                });
+                              }}
                             />
                           </DropdownMenu.Portal>
                           {!(index + 1 >= drafts.length) && (
@@ -206,6 +256,7 @@ export function Navbar({ importDraft }: NavbarProps) {
             name={name}
             onDeleteDraft={onDeleteDraft}
             onUpdateDraft={onUpdateDraft}
+            onCreateNew={onCreateNew}
           />
         </DropdownMenu.Root>
       </Dialog.Root>

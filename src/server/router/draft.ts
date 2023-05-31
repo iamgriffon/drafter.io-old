@@ -14,6 +14,15 @@ export const draftRouter = createTRPCRouter({
     )
     .mutation(async ({ input }) => {
       const { user_id, draft, link, name } = input;
+
+      const findUnique = await prisma.draft.findFirst({
+        where: {
+          name: name
+        }
+      });
+
+      if (findUnique) return { error: "Name already in use" };
+
       const newRegistry = await prisma.draft.create({
         data: {
           data: draft,
@@ -28,7 +37,7 @@ export const draftRouter = createTRPCRouter({
           id: newRegistry.id,
         },
       });
-      return selectedRegistry;
+      return { data: selectedRegistry };
     }),
   import: publicProcedure
     .input(
@@ -38,11 +47,16 @@ export const draftRouter = createTRPCRouter({
     )
     .query(async ({ input }) => {
       const { link } = input;
-      return await prisma.draft.findFirstOrThrow({
+      const res = await prisma.draft.findFirst({
         where: {
           link: link,
         },
       });
+      if (res){
+        return { data: res};
+      } else {
+        return { error: "No Draft Found" };
+      }
     }),
   fetch: publicProcedure
     .input(
@@ -62,25 +76,25 @@ export const draftRouter = createTRPCRouter({
   update: publicProcedure
     .input(
       z.object({
-        id: z.string(),
+        link: z.string(),
         name: z.string(),
         draft: z.record(z.any()),
       })
     )
     .mutation(async ({ input }) => {
-      const { id, draft, name } = input;
+      const { link, draft, name } = input;
       const getDraft = await prisma.draft.findFirst({
         where: {
-          id: id,
+          link: link,
         },
       });
-      
 
       if (!getDraft) {
         console.log("Opa");
         return {
-          message: "We were not able to find your draft, please try again later",
-          success: false
+          message:
+						"We were not able to find your draft, please try again later",
+          success: false,
         };
       }
 
@@ -96,31 +110,41 @@ export const draftRouter = createTRPCRouter({
       console.log("Opa 2");
       return {
         message: `${res.name} has been successfuly updated!`,
-        success: true
+        success: true,
       };
     }),
   delete: publicProcedure
-    .input(z.object({
-      id: z.string()
-    }))
-    .mutation(async ({input}) => {
-      const { id } = input;
+    .input(
+      z.object({
+        id: z.string(),
+        user_id: z.string(),
+      })
+    )
+    .mutation(async ({ input }) => {
+      const { id, user_id } = input;
 
-      const selectedDraft = await prisma.draft.findFirst({
+      const selectedDraft = await prisma.draft.findFirstOrThrow({
         where: {
-          id: id
-        }
+          id: id,
+        },
       });
 
-      if (!selectedDraft) return { message: "An Error Occurred" };
+      const isDraftOwner = selectedDraft.id === id;
 
-      const deleteDraft = await prisma.draft.delete({
-        where: {
-          id: selectedDraft.id
-        }
-      }).then(res => res.data);
+      if (selectedDraft && isDraftOwner) {
+        const deleteDraft = await prisma.draft
+          .delete({
+            where: {
+              id: selectedDraft.id,
+            },
+          })
+          .then((res) => res.data);
 
-      if (deleteDraft) return { message: "Draft Deleted Successfully" };
-
-    })
+        if (deleteDraft) return { message: "Draft Deleted Successfully" };
+      } else if (!isDraftOwner){
+        return { message: "Error when deleting draft, Insufficient permissions" };
+      } else if (!selectedDraft) {
+        return { message: "Error when deleting draft, No draft found" };
+      }
+    }),
 });

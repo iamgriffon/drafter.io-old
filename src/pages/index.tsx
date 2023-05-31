@@ -7,8 +7,6 @@ import { Champion, GameSeries, Draft as DraftType, Game } from "@/types/draft";
 import {
   DEFAULT_BLUE_SIDE_DRAFT_STATE,
   DEFAULT_BO1_STATE,
-  DEFAULT_BO3_STATE,
-  DEFAULT_BO5_STATE,
   DEFAULT_GAME_STATE,
   DEFAULT_MATCH_STATE,
   DEFAULT_RED_SIDE_DRAFT_STATE,
@@ -35,16 +33,6 @@ const Home: NextPage = () => {
     }
   );
 
-  useEffect(() => {
-    async function fetchDrafts() {
-      if (user) {
-        const response = (await refetch()).data;
-        if (response) setDrafts(response);
-      }
-    };
-    fetchDrafts();
-  }, [user, refetch]);
-  
   const [champions, setChampions] = useState<Champion[]>([]);
   const [matches, setMatches] = useState<GameSeries>(DEFAULT_MATCH_STATE);
   const [redSide, setRedSide] = useState<DraftType>(
@@ -57,56 +45,65 @@ const Home: NextPage = () => {
     DEFAULT_GAME_STATE
   );
 
-  useEffect(() => {
-    if (selectedMatch !== null) {
-      setMatches((prevMatches) => ({
-        ...prevMatches,
-        games: prevMatches.games.map((game) => {
-          if (game.game === selectedMatch.game) {
-            return {
-              ...game,
-              blueSide: blueSide,
-              redSide: redSide,
-            };
-          } else {
-            return game;
-          }
-        }),
-      }));
-    }
-  }, [blueSide, redSide, selectedMatch]);
-
-  const importDraft = useCallback(
-    (draft: GameSeries) => {
-      setMatches(draft);
+  const importDraft = useCallback((draft: GameSeries) => {
+    setMatches(draft);
+    if (draft.games.length >= 1){
       setRedSide(draft.games[0]!.redSide);
       setBlueSide(draft.games[0]!.blueSide);
+    }
+  }, []);
+
+  const selectMatch = useCallback(
+    (game: Game) => {
+      setSelectedMatch(game);
+      setRedSide(game.redSide);
+      setBlueSide(game.blueSide);
     },
-    [setMatches]
+    [setBlueSide, setRedSide, setSelectedMatch]
   );
 
-  function purgeDraft() {
-    const getMatchType = matches.series;
-    let purgedPicks;
-    switch (getMatchType) {
-    case "BO1":
-      purgedPicks = DEFAULT_BO1_STATE;
-      break;
-    case "BO3":
-      purgedPicks = DEFAULT_BO3_STATE;
-      break;
-    case "BO5":
-      purgedPicks = DEFAULT_BO5_STATE;
-      break;
+  const purgeDraft = useCallback(() => {
+    setMatches(DEFAULT_BO1_STATE);
+    setBlueSide(DEFAULT_BLUE_SIDE_DRAFT_STATE);
+    setRedSide(DEFAULT_RED_SIDE_DRAFT_STATE);
+    setSelectedMatch(matches.games[0]!);
+  },[]);
+
+  useEffect(() => {
+    if (selectedMatch !== null) {
+      // setMatches((prevMatches) => ({
+      //   ...prevMatches,
+      //   games: prevMatches.games.map((game, index) => {
+      //     if (game.game === selectedMatch.game) {
+      //       return {
+      //         ...game,
+      //         blueSide: blueSide,
+      //         redSide: redSide,
+      //       };
+      //     } else {
+      //       return game;
+      //     }
+      //   }),
+      // }));
     }
-    setMatches(purgedPicks);
-  };
+  }, [blueSide, redSide, selectedMatch]);
 
   useEffect(() => {
     if (!selectedMatch) return;
     setBlueSide(selectedMatch?.blueSide);
     setRedSide(selectedMatch?.redSide);
   }, [selectedMatch, setSelectedMatch, importDraft]);
+
+  useEffect(() => {
+    async function fetchDrafts() {
+      if (user) {
+        const response = (await refetch()).data;
+        if (response) setDrafts(response);
+      }
+    }
+    fetchDrafts();
+  }, [user, refetch]);
+
 
   return (
     <MenuProvider
@@ -131,8 +128,9 @@ const Home: NextPage = () => {
           <Navbar
             purgeDraft={purgeDraft}
             importDraft={importDraft}
+            selectedMatch={selectedMatch}
           />
-          <Menu />
+          <Menu selectMatch={selectMatch} />
           <main>
             <Draft />
           </main>

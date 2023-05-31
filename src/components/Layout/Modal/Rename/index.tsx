@@ -1,9 +1,7 @@
 import * as Dialog from "@radix-ui/react-dialog";
 import { useEffect, useState } from "react";
-import { BiLinkAlt } from "react-icons/bi";
 import { FaCheck, FaSpinner } from "react-icons/fa";
-import { ExportModalProps } from "..";
-import { v4 as uuid } from "uuid";
+import { RenameModalProps } from "..";
 import { trpc } from "@/utils/trpc";
 import { useMenu } from "@/context/MenuContext";
 import { useUser } from "@clerk/nextjs";
@@ -15,21 +13,19 @@ interface ButtonStepMap {
 	[key: number]: JSX.Element;
 }
 
-export function ExportModal({
+export function RenameModal({
   closeModal,
   label,
   errorMessage,
   setErrorMessage,
   successMessage,
   setSuccessMessage,
-  setLink
-}: ExportModalProps) {
+  link
+}: RenameModalProps) {
   const { mutateAsync, isLoading, isSuccess } =
-		trpc.draft.export.useMutation();
-  const [draftLink, setDraftLink] = useState("");
-  const [draftString, setDraftString] = useState("");
+		trpc.draft.update.useMutation();
+  const [name, setName] = useState("");
   const { matches } = useMenu();
-  const draftSlug = () => uuid().substring(12);
   const { user } = useUser();
   const isDraftValid = validateGameSeries(matches);
   const [loading, setLoading] = useState(false);
@@ -42,36 +38,33 @@ export function ExportModal({
     setStep(0);
     setErrorMessage("");
     setSuccessMessage("");
+    console.log({name: name});
   }, []);
 
   let user_id: string;
   let draft: GameSeries;
 
-  async function onExportDraft() {
+  async function onRenameDraft() {
     if (!getErrorMessage()) return;
     setErrorMessage("");
     setSuccessMessage("");
-    const link = `https://drafter.io/${draftSlug()}`;
     if (user) user_id = user.id;
     if (isDraftValid) draft = matches;
     setStep(1);
     await mutateAsync({
-      draft,
-      link,
-      name: draftString,
-      user_id,
+      draft: draft,
+      link: link,
+      name: name
     }, {
       onError: (error) => {
         console.log(error);
       }
     }).then((res) => {
-      if (res && res?.data?.link) {
-        setSuccessMessage("Successfuly Created!");
-        setDraftLink(res.data.link);
-        setLink(res.data.link);
+      if (res && res?.success === true) {
+        setSuccessMessage("Successfuly Renamed!");
         setStep(2);
-      } else if (res.error){
-        setErrorMessage(res.error);
+      } else if (!res.success){
+        setErrorMessage(res.message);
         setStep(0);
       }
     });
@@ -79,11 +72,10 @@ export function ExportModal({
 
   function getErrorMessage() {
     if (!isDraftValid) {
-      setErrorMessage("Error: Incomplete Draft");
-      console.log("Draft Invalido");
+      setErrorMessage("Error: Could not rename your draft");
       return false;
     }
-    if (draftString.length < 4) {
+    if (name.length < 4) {
       setErrorMessage("Error: A Draft name must be at least 4 characters long");
       console.log("Nome muito curto");
       return false;
@@ -91,26 +83,15 @@ export function ExportModal({
     return true;
   }
 
-  async function handleCopy() {
-    try {
-      await navigator.clipboard.writeText(draftLink);
-      setSuccessMessage("Copied to cliboard!");
-    } catch (err) {
-      setErrorMessage("An error ocurred, please try again");
-    }
-  }
-
   useEffect(() => {
     setLoading(() => isLoading);
     setSuccess(() => isSuccess);
   }, [isLoading, isSuccess]);
 
-
-
   const buttonStepMap: ButtonStepMap = {
     0: (
       <p
-        onClick={() => onExportDraft()}
+        onClick={() => onRenameDraft()}
         className="self-center"
       >
 				GO!
@@ -126,7 +107,7 @@ export function ExportModal({
   };
 
   return (
-    <div className="flex font-bold text-gray-800 mt-10 bg-slate-400 w-4/12 opacity-100 rounded-lg h-72 flex-col justify-between border-gray-700 p-8">
+    <div className="flex font-bold text-gray-800 mt-10 bg-slate-400 w-4/12 opacity-100 rounded-lg h-48 flex-col justify-between border-gray-700 p-8">
       <div className="flex justify-between items-start">
         <p className="text-white mb-4 drop-shadow-lg shadow-black text-lg">
           {label} Draft
@@ -140,14 +121,14 @@ export function ExportModal({
       </div>
 
       <div className="flex flex-col gap-2">
-        <p className="text-white">Give your Draft a name:</p>
+        <p className="text-white">Give your draft a new name:</p>
         <section className="flex gap-2">
           <div className="p-4 h-12 rounded-md w-full flex flex-row items-center bg-white">
             <input
               className="p-2 font-mono font-normal w-[80%] outline-none bg-transparent"
               type="text"
-              value={draftString}
-              onChange={(e) => setDraftString(e.target.value)}
+              value={name}
+              onChange={(e) => setName(e.target.value)}
             />
           </div>
           <div>
@@ -159,7 +140,7 @@ export function ExportModal({
               <button
                 className="w-32 h-12 rounded-lg flex justify-center bg-red-500 opacity-100 font-bold text-white hover:bg-red-600 transition-colors"
                 onClick={() => {
-                  onExportDraft();
+                  onRenameDraft();
                 }}
               >
                 <TbError404 className="w-6 h-6 self-center" />
@@ -167,28 +148,6 @@ export function ExportModal({
             )}
           </div>
         </section>
-
-        <p className="text-white">Link</p>
-        <div className="flex w-full items-center justify-between gap-2">
-          <div
-            className="p-4 h-12 rounded-md w-full flex items-center bg-white aria-disabled:bg-gray-400 aria-disabled:cursor-not-allowed aria-disabled:border-gray-500 aria-disabled:border-2
-             cursor-pointer"
-            aria-readonly
-            onClick={async () => await handleCopy()}
-          >
-            <BiLinkAlt
-              size={18}
-              className="mr-2 cursor-pointer"
-            />
-            <input
-              className="p-2 font-mono font-normal w-full outline-none bg-transparent cursor-pointer"
-              type="text"
-              placeholder="Your link will appear here"
-              value={draftLink}
-              readOnly
-            />
-          </div>
-        </div>
         {errorMessage.trim().length > 0 ? (
           <p className="text-red-400">{"*" + errorMessage}</p>
         ) : null}

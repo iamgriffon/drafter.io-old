@@ -6,6 +6,7 @@ import { trpc } from "@/utils/trpc";
 import { FaSpinner, FaCheck } from "react-icons/fa";
 import { TbError404 } from "react-icons/tb";
 import { useDraft } from "@/context/DraftContext";
+import { useMenu } from "@/context/MenuContext";
 
 interface ButtonStepMap {
   [key: number]: JSX.Element;
@@ -16,13 +17,24 @@ export function ImportModal({
   label,
   onSubmit: importDraft,
   link,
+  setLink,
+  step,
+  setStep,
+  errorMessage,
+  setErrorMessage,
 }: ImportModalProps) {
+
+  useEffect(() => {
+    setStep(0);
+    setErrorMessage("");
+  },[]);
+
   const [draftLink, setDraftLink] = useState(link);
-  const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const { setSelectedMatch } = useMenu();
+  const { handlePickSeries } = useMenu();
   const { setId } = useDraft();
-  const [step, setStep] = useState(1);
   const { isLoading, isSuccess, refetch } = trpc.draft.import.useQuery(
     {
       link: draftLink,
@@ -43,24 +55,30 @@ export function ImportModal({
     setLoading(false);
     setSuccess(false);
     setStep(0);
+    setErrorMessage("");
   }, []);
 
   async function onImportDraft() {
     setErrorMessage("");
+    setStep(1);
     if (!draftLink.includes("https://")) {
       setDraftLink((prevState) => `https://drafter.io/${prevState}`);
     };
-    setStep(1);
     return await refetch().then((res) => {
-      if (res.data?.data) {
-        importDraft(JSON.parse(JSON.stringify(res.data?.data)));
-        setId(res.data.id);
+      if (res.data?.data?.data) {
+        const parsedData = JSON.parse(JSON.stringify(res.data?.data.data));
+        setId(res.data.data.id);
+        setLink(res.data.data.link);
+        res.data.data.data && typeof parsedData.series === "string" && handlePickSeries(parsedData.series);
+        importDraft(parsedData);
         setStep(2);
+        setSelectedMatch(parsedData.games[0]!);
         setTimeout(() => {
           closeModal();
         }, 200);
-      } else if (res.error) {
-        setErrorMessage(res.error.message);
+      } else if (res.data?.error) {
+        setErrorMessage(res.data?.error);
+        setStep(0);
       }
     });
   }
@@ -74,9 +92,9 @@ export function ImportModal({
   }
 
   const buttonStepMap: ButtonStepMap  = {
-    0:  <p onClick={async () => await onImportDraft()} className="self-center">GO!</p>,
+    0:  <p onClick={onImportDraft} className="self-center">GO!</p>,
     1: <FaSpinner className="animate-spin self-center w-6 h-6" />,
-    2: <FaCheck onClick={() => closeModal()} className="w-6 h-6 self-center" />
+    2: <FaCheck onClick={closeModal} className="w-6 h-6 self-center" />
   };
 
   return (
